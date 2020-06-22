@@ -8,22 +8,35 @@
 
 #import "CustomButton.h"
 #import "UIColor+ColorFromRGB.h"
+#import "Constants.h"
 
 @implementation CustomButton
 
-+(UIButton *)configureButtonWithText:(NSString *)text textColorNumber:(NSNumber *)textcolor andBackgroundColorNumber:(NSNumber *)color {
-    
-    UIButton *button = [[UIButton alloc] init];
-    
-    [button setTitle:text forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor colorFromRGBNumber:textcolor] forState:UIControlStateNormal];
-    
-    [button.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:20]];
-    button.layer.cornerRadius = 27;
-    button.backgroundColor = [UIColor colorFromRGBNumber:color];
-    button.clipsToBounds = YES;
-    
-    return button;
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self customInit];
+    }
+    return self;
 }
 
+-(instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self customInit];
+    }
+    return self;
+}
+
+-(void)customInit {
+    [self.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:20]];
+    self.layer.cornerRadius = 27;
+    self.clipsToBounds = YES;
+    
+    [NSLayoutConstraint activateConstraints:@[
+        [self.heightAnchor constraintEqualToConstant:kButtonHeight],
+        [self.widthAnchor constraintEqualToConstant:kButtonWidth]
+    ]];
+}
 @end

@@ -67,9 +67,12 @@
 }
 
 -(void)configureStartButton {
+    self.startButton = [[CustomButton alloc] init];
     
-    self.startButton = [CustomButton configureButtonWithText:@"START" textColorNumber:@0x101010 andBackgroundColorNumber:@0xF9CC78];
     [self.startButton addTarget:self action:@selector(startButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.startButton setTitle:@"START" forState:UIControlStateNormal];
+    [self.startButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
+    [self.startButton setTitleColor:[UIColor colorFromRGBNumber:@0x101010] forState:UIControlStateNormal];
     
     self.startButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.startButton];
@@ -77,8 +80,6 @@
     [NSLayoutConstraint activateConstraints:@[
         [self.startButton.centerYAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-100],
         [self.startButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-        [self.startButton.heightAnchor constraintEqualToConstant:kButtonHeight],
-        [self.startButton.widthAnchor constraintEqualToConstant:kButtonWidth]
     ]];
     
 }
@@ -104,17 +105,18 @@
     NSMutableArray *tabBarControllers = [[NSMutableArray alloc] init];
 
     UINavigationController *firstViewController = [[UINavigationController alloc] initWithRootViewController:[InfoTableViewController new]];
-    [self setTabBarImage:@"info_unselected" selectedImage:@"info_selected" forController:firstViewController];
+  //  [self setTabBarImage:@"info_unselected" selectedImage:@"info_selected" forController:firstViewController];
     [tabBarControllers addObject:firstViewController];
+     firstViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"info_unselected"] selectedImage:[[UIImage imageNamed:@"info_selected"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     
     GalleryCollectionViewController *vc = [[GalleryCollectionViewController alloc] initWithNibName:@"GalleryCollectionViewController" bundle:nil];
     UINavigationController *secondViewController = [[UINavigationController alloc] initWithRootViewController:vc];
-     [self setTabBarImage:@"gallery_unselected" selectedImage:@"gallery_selected" forController:secondViewController];
     [tabBarControllers addObject:secondViewController];
+     secondViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"gallery_unselected"] selectedImage:[[UIImage imageNamed:@"gallery_selected"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 
     UINavigationController *thirdViewController = [[UINavigationController alloc] initWithRootViewController:[RSSchoolTask6ViewController new]];
-    [self setTabBarImage:@"home_unselected" selectedImage:@"home_selected" forController:thirdViewController];
     [tabBarControllers addObject:thirdViewController];
+    thirdViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"home_unselected"] selectedImage:[[UIImage imageNamed:@"home_selected"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     
     tabBarController.viewControllers = tabBarControllers;
     tabBarController.customizableViewControllers = nil;
@@ -122,15 +124,5 @@
     [self.navigationController pushViewController:tabBarController animated:YES];
 
 }
-
--(void)setTabBarImage:(NSString *)image selectedImage:(NSString *)selectedImage forController:(UIViewController *)vc {
-    vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[[UIImage imageNamed:image] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] tag:0];
-    vc.tabBarItem.selectedImage = [[UIImage imageNamed:selectedImage] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-}
-
-
-    
-
-
 
 @end

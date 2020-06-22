@@ -46,7 +46,11 @@
 #pragma mark - UI Setup
 
 -(void)configureButtons {
-    self.openCVButton = [CustomButton configureButtonWithText:@"Open Git CV" textColorNumber:@0x101010 andBackgroundColorNumber:@0xF9CC78];
+    self.openCVButton = [[CustomButton alloc] init];
+    [self.openCVButton setTitle:@"Open Git CV" forState:UIControlStateNormal];
+    [self.openCVButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
+    [self.openCVButton setTitleColor:[UIColor colorFromRGBNumber:@0x101010] forState:UIControlStateNormal];
+    
     [self.openCVButton addTarget:self action:@selector(openCVButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     
     self.openCVButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -55,11 +59,13 @@
     [NSLayoutConstraint activateConstraints:@[
         [self.openCVButton.topAnchor constraintEqualToAnchor:self.bottomView.topAnchor constant:30],
         [self.openCVButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
-        [self.openCVButton.heightAnchor constraintEqualToConstant:kButtonHeight],
-        [self.openCVButton.widthAnchor constraintEqualToConstant:kButtonWidth]
     ]];
     
-    self.goToStartButton = [CustomButton configureButtonWithText:@"Go to start!" textColorNumber:@0xFFFFFF andBackgroundColorNumber:@0xEE686A];
+    self.goToStartButton = [[CustomButton alloc] init];
+    [self.goToStartButton setTitle:@"Go to start!" forState:UIControlStateNormal];
+    [self.goToStartButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xEE686A]];
+    [self.goToStartButton setTitleColor:[UIColor colorFromRGBNumber:@0xFFFFFF] forState:UIControlStateNormal];
+    
     [self.goToStartButton addTarget:self action:@selector(goToStartButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     
     self.goToStartButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -68,8 +74,6 @@
     [NSLayoutConstraint activateConstraints:@[
         [self.goToStartButton.bottomAnchor constraintEqualToAnchor:self.bottomView.bottomAnchor constant:-30],
         [self.goToStartButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
-        [self.goToStartButton.heightAnchor constraintEqualToConstant:kButtonHeight],
-        [self.goToStartButton.widthAnchor constraintEqualToConstant:kButtonWidth],
     ]];
 }
 

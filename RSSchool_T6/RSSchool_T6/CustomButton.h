@@ -11,7 +11,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CustomButton : UIButton
-+(UIButton *)configureButtonWithText:(NSString *)text textColorNumber:(NSNumber *)textcolor andBackgroundColorNumber:(NSNumber *)color;
 
 @end
 

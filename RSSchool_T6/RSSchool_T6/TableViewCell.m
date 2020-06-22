@@ -13,18 +13,12 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-        
-   // self.namelabel.text = @"text";
-    
+            
     UIView *bgColorView = [[UIView alloc] init];
     bgColorView.backgroundColor = [UIColor colorFromRGBNumber:@0xFDF4E3];
     [self setSelectedBackgroundView:bgColorView];
 
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-}
 
 @end

@@ -10,7 +10,6 @@
 #import "UIColor+ColorFromRGB.h"
 #import "FiguresStackView.h"
 #import "InfoTableViewController.h"
-#import "SecondCollectionViewController.h"
 #import "RSSchoolTask6ViewController.h"
 #import "CustomButton.h"
 #import "GalleryCollectionViewController.h"
@@ -30,12 +29,11 @@
     [self configureQuestionLabel];
     [self configureStartButton];
     [self configureFiguresStackView];
-        
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [self.navigationController setNavigationBarHidden:YES animated:animated];
     [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -59,16 +57,21 @@
 
     [self.view addSubview:self.questionLabel];
     self.questionLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
+//
+//    NSLayoutConstraint *topLabelConstraint = [self.questionLabel.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:100];
+//    topLabelConstraint.priority = 800;
+//    topLabelConstraint.active = YES;
+
     [NSLayoutConstraint activateConstraints:@[
-        [self.questionLabel.centerYAnchor constraintLessThanOrEqualToAnchor:self.view.topAnchor constant:self.view.frame.size.height / 5],
+        [self.questionLabel.topAnchor constraintLessThanOrEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:100],
+        [self.questionLabel.topAnchor constraintGreaterThanOrEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:20],
+
         [self.questionLabel.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
     ]];
 }
 
 -(void)configureStartButton {
     self.startButton = [[CustomButton alloc] init];
-    
     [self.startButton addTarget:self action:@selector(startButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.startButton setTitle:@"START" forState:UIControlStateNormal];
     [self.startButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
@@ -77,9 +80,15 @@
     self.startButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.startButton];
     
+//    NSLayoutConstraint *bottomButtonConstraint = [self.startButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-80];
+//    bottomButtonConstraint.priority = 800;
+//    bottomButtonConstraint.active = YES;
+    
     [NSLayoutConstraint activateConstraints:@[
-        [self.startButton.centerYAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-100],
         [self.startButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.startButton.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.view.bottomAnchor constant:-100],
+
+        [self.startButton.bottomAnchor constraintLessThanOrEqualToAnchor:self.view.bottomAnchor constant:-20],
     ]];
     
 }
@@ -89,11 +98,16 @@
     self.figuresStackView = [[FiguresStackView alloc] init];
     [self.view addSubview:self.figuresStackView];
     self.figuresStackView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     [NSLayoutConstraint activateConstraints:@[
-        [self.figuresStackView.topAnchor constraintEqualToAnchor:self.questionLabel.bottomAnchor constant:50],
+        [self.figuresStackView.topAnchor constraintGreaterThanOrEqualToAnchor:self.questionLabel.bottomAnchor constant:20],
+        [self.figuresStackView.topAnchor constraintLessThanOrEqualToAnchor:self.questionLabel.bottomAnchor constant:100],
+        [self.figuresStackView.centerYAnchor constraintLessThanOrEqualToAnchor:self.view.centerYAnchor constant:-50],
         [self.figuresStackView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.figuresStackView.bottomAnchor constraintLessThanOrEqualToAnchor:self.startButton.topAnchor constant:-20],
+
     ]];
+
 }
 
 #pragma mark - Actions
@@ -105,7 +119,6 @@
     NSMutableArray *tabBarControllers = [[NSMutableArray alloc] init];
 
     UINavigationController *firstViewController = [[UINavigationController alloc] initWithRootViewController:[InfoTableViewController new]];
-  //  [self setTabBarImage:@"info_unselected" selectedImage:@"info_selected" forController:firstViewController];
     [tabBarControllers addObject:firstViewController];
      firstViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"info_unselected"] selectedImage:[[UIImage imageNamed:@"info_selected"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     

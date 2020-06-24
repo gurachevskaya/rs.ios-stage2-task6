@@ -12,7 +12,6 @@
 @interface DetailViewController ()
 - (IBAction)CustomButtonTapped:(id)sender;
 
-
 @end
 
 @implementation DetailViewController
@@ -35,16 +34,35 @@
     self.navigationItem.leftBarButtonItem = backButton;
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor colorFromRGBNumber:@0x101010];
 
-    self.imageManager = [[PHCachingImageManager alloc] init];
-    [self.imageManager requestImageForAsset:self.asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFit options:nil resultHandler:^(UIImage *result, NSDictionary *info)
-               {
-        self.imageView.image = result;
-//        [self.imageView.heightAnchor constraintEqualToConstant:result.size.height].active = YES;
-
-               }];
-    
+    PHContentEditingInputRequestOptions *editOptions = [[PHContentEditingInputRequestOptions alloc] init];
+         [self.asset requestContentEditingInputWithOptions:editOptions completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
+             if (contentEditingInput.fullSizeImageURL) {
+             self.navigationItem.title = [contentEditingInput.fullSizeImageURL lastPathComponent];
+             }
+         }];
+    [self conFigureImageView];
     [self configureLabels];
     [self configureButton];
+}
+
+
+-(void)conFigureImageView {
+    
+    self.imageManager = [[PHCachingImageManager alloc] init];
+    
+    if (self.asset.mediaType == PHAssetMediaTypeImage || self.asset.mediaType == PHAssetMediaTypeVideo) {
+        [self.imageManager requestImageForAsset:self.asset targetSize:self.imageView.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage *result, NSDictionary *info)
+         {
+            self.imageView.image = result;
+        }];
+    }
+    
+    if (self.asset.mediaType == PHAssetMediaTypeAudio) {
+        self.imageView.image = [UIImage imageNamed:@"icons8-musical-100"];
+    }
+    if (self.asset.mediaType == PHAssetMediaTypeUnknown) {
+        self.imageView.image =  [UIImage imageNamed:@"icons8-minus-128"];
+    }
 }
 
 -(void)configureLabels {
@@ -77,7 +95,9 @@
     [self.shareButton setTitle:@"Share" forState:UIControlStateNormal];
     [self.shareButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
     [self.shareButton setTitleColor:[UIColor colorFromRGBNumber:@0x101010] forState:UIControlStateNormal];
-        
+    if (self.asset.mediaType == PHAssetMediaTypeAudio || self.asset.mediaType == PHAssetMediaTypeUnknown) {
+        self.shareButton.hidden = YES;
+    }
 }
 
 - (IBAction)CustomButtonTapped:(id)sender {

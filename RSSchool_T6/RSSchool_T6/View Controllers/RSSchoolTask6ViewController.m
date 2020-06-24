@@ -19,6 +19,9 @@
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UIView *middleView;
 @property (strong, nonatomic) UIView *bottomView;
+@property (strong, nonatomic) UIView *firstLineView;
+@property (strong, nonatomic) UIView *secondLineView;
+
 @property (strong, nonatomic) UIStackView *infoStackView;
 @property (strong, nonatomic) UIImageView *appleView;
 
@@ -89,35 +92,29 @@
 
 -(void)configureViews {
     
-//    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:(CGRect)self.view.bounds.size];
-//    scrollView.contentSize = self.view.bounds.size;
-    
     self.topView  =[[UIView alloc] init];
     self.middleView  =[[UIView alloc] init];
     self.bottomView  =[[UIView alloc] init];
     
-    UIView *view1 = [[UIView alloc] init];
-    UIView *view2 = [[UIView alloc] init];
-    
-//    self.topView.backgroundColor = UIColor.greenColor;
-//    self.middleView.backgroundColor = UIColor.redColor;
-//    self.bottomView.backgroundColor = UIColor.blueColor;
-    view1.backgroundColor = [UIColor colorFromRGBNumber:@0x707070];
-    view2.backgroundColor = [UIColor colorFromRGBNumber:@0x707070];
-    view1.alpha = 0.5;
-    view2.alpha = 0.5;
+    self.firstLineView = [[UIView alloc] init];
+    self.secondLineView = [[UIView alloc] init];
+
+    self.firstLineView.backgroundColor = [UIColor colorFromRGBNumber:@0x707070];
+    self.secondLineView.backgroundColor = [UIColor colorFromRGBNumber:@0x707070];
+    self.firstLineView.alpha = 0.5;
+    self.secondLineView.alpha = 0.5;
     
     [self.view addSubview:self.topView];
     [self.view addSubview:self.middleView];
     [self.view addSubview:self.bottomView];
-    [self.view addSubview:view1];
-    [self.view addSubview:view2];
+    [self.view addSubview:self.firstLineView];
+    [self.view addSubview:self.secondLineView];
     
     self.topView.translatesAutoresizingMaskIntoConstraints = NO;
     self.middleView.translatesAutoresizingMaskIntoConstraints = NO;
     self.bottomView.translatesAutoresizingMaskIntoConstraints = NO;
-    view1.translatesAutoresizingMaskIntoConstraints = NO;
-    view2.translatesAutoresizingMaskIntoConstraints = NO;
+    self.firstLineView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.secondLineView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [NSLayoutConstraint activateConstraints:@[
         
@@ -132,19 +129,19 @@
         [self.middleView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
         [self.bottomView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
         
-        [view1.topAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
-        [self.middleView.topAnchor constraintEqualToAnchor:view1.bottomAnchor],
-        [view2.topAnchor constraintEqualToAnchor:self.middleView.bottomAnchor],
-        [self.bottomView.topAnchor constraintEqualToAnchor:view2.bottomAnchor],
+        [self.firstLineView.topAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
+        [self.middleView.topAnchor constraintEqualToAnchor:self.firstLineView.bottomAnchor],
+        [self.secondLineView.topAnchor constraintEqualToAnchor:self.middleView.bottomAnchor],
+        [self.bottomView.topAnchor constraintEqualToAnchor:self.secondLineView.bottomAnchor],
         [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
         
         
-        [view1.heightAnchor constraintEqualToConstant:2],
-        [view1.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:50],
-        [view1.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-50],
-        [view2.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:50],
-        [view2.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-50],
-        [view2.heightAnchor constraintEqualToConstant:2]
+        [self.firstLineView.heightAnchor constraintEqualToConstant:2],
+        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:50],
+        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-50],
+        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:50],
+        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-50],
+        [self.secondLineView.heightAnchor constraintEqualToConstant:2]
     ]];
     
 }
@@ -165,7 +162,6 @@
     systemLabel.text = [NSString stringWithFormat:@"%@ %@", device.systemName, device.systemVersion];
     nameLabel.font = modelLabel.font = systemLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
 
-    
     [self.infoStackView addArrangedSubview:nameLabel];
     [self.infoStackView addArrangedSubview:modelLabel];
     [self.infoStackView addArrangedSubview:systemLabel];
@@ -185,30 +181,31 @@
     
     [NSLayoutConstraint activateConstraints:@[
            [self.appleView.trailingAnchor constraintEqualToAnchor:self.infoStackView.leadingAnchor constant:-10],
-           [self.appleView.centerYAnchor constraintEqualToAnchor:self.infoStackView.centerYAnchor],           
+           [self.appleView.centerYAnchor constraintEqualToAnchor:self.infoStackView.centerYAnchor],
+
        ]];
-    
+
     
 }
 
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+
+
+}
 //-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
 //    [super traitCollectionDidChange:previousTraitCollection];
 //    [self setNeedsUpdateConstraints];
 //}
 
-//- (void)updateConstraints {
-//    switch (self.traitCollection.verticalSizeClass) {
-//        case UIUserInterfaceSizeClassRegular:
-//
-//            break;
-//        case UIUserInterfaceSizeClassCompact:
-//
-//            break;
-//        default:
-//            break;
-//    }
-//    [super updateConstraints];
-//}
+- (void)updateConstraints {
+    if(UIDevice.currentDevice.orientation == UIDeviceOrientationPortrait) {
+        
+
+          
+    }
+}
 
 
 #pragma mark - Actions

@@ -14,9 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface InfoTableViewController : UITableViewController
 
-
 @property(nonatomic , strong) PHFetchResult *assetsFetchResults;
 @property(nonatomic , strong) PHCachingImageManager *imageManager;
+@property(strong, atomic) NSMutableArray<PHAsset*>* dataSource;
 @end
 
 NS_ASSUME_NONNULL_END

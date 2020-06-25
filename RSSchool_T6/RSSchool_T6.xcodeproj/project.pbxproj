@@ -105,20 +105,12 @@
 		9A499EF3249FA73F001256BE /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				9A699F8B249D46B4002ADFB5 /* MainViewController.h */,
-				9A699F8C249D46B4002ADFB5 /* MainViewController.m */,
-				9A47E1BB249E420B00E6D62E /* InfoTableViewController.h */,
-				9A47E1BC249E420B00E6D62E /* InfoTableViewController.m */,
-				9A499EFE249FC093001256BE /* GalleryCollectionViewController.h */,
-				9A499EFF249FC093001256BE /* GalleryCollectionViewController.m */,
-				9A499F00249FC093001256BE /* GalleryCollectionViewController.xib */,
-				9A47E1BE249E476200E6D62E /* RSSchoolTask6ViewController.h */,
-				9A47E1BF249E476200E6D62E /* RSSchoolTask6ViewController.m */,
-				9A499F0F24A0F62D001256BE /* DetailViewController.h */,
-				9A499F1024A0F62D001256BE /* DetailViewController.m */,
-				9A499F1124A0F62D001256BE /* DetailViewController.xib */,
-				9A4758BC24A3D2B100BAC312 /* ModalViewController.h */,
-				9A4758BD24A3D2B100BAC312 /* ModalViewController.m */,
+				9A67811A24A538A900490BB1 /* StartViewController */,
+				9A67811924A5388100490BB1 /* InfoTableViewController */,
+				9A67811B24A538D300490BB1 /* GalleryCollectionViewController */,
+				9A67811C24A538FE00490BB1 /* RSSchoolTask6ViewController */,
+				9A67811D24A5392600490BB1 /* DetailViewController */,
+				9A67811E24A5394100490BB1 /* ModalViewController */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -139,6 +131,62 @@
 				9A499F0A249FDF98001256BE /* Constants.m */,
 			);
 			path = Constants;
+			sourceTree = "<group>";
+		};
+		9A67811924A5388100490BB1 /* InfoTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9A47E1BB249E420B00E6D62E /* InfoTableViewController.h */,
+				9A47E1BC249E420B00E6D62E /* InfoTableViewController.m */,
+			);
+			path = InfoTableViewController;
+			sourceTree = "<group>";
+		};
+		9A67811A24A538A900490BB1 /* StartViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9A699F8B249D46B4002ADFB5 /* MainViewController.h */,
+				9A699F8C249D46B4002ADFB5 /* MainViewController.m */,
+			);
+			path = StartViewController;
+			sourceTree = "<group>";
+		};
+		9A67811B24A538D300490BB1 /* GalleryCollectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9A499EFE249FC093001256BE /* GalleryCollectionViewController.h */,
+				9A499EFF249FC093001256BE /* GalleryCollectionViewController.m */,
+				9A499F00249FC093001256BE /* GalleryCollectionViewController.xib */,
+			);
+			path = GalleryCollectionViewController;
+			sourceTree = "<group>";
+		};
+		9A67811C24A538FE00490BB1 /* RSSchoolTask6ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9A47E1BE249E476200E6D62E /* RSSchoolTask6ViewController.h */,
+				9A47E1BF249E476200E6D62E /* RSSchoolTask6ViewController.m */,
+			);
+			path = RSSchoolTask6ViewController;
+			sourceTree = "<group>";
+		};
+		9A67811D24A5392600490BB1 /* DetailViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9A499F0F24A0F62D001256BE /* DetailViewController.h */,
+				9A499F1024A0F62D001256BE /* DetailViewController.m */,
+				9A499F1124A0F62D001256BE /* DetailViewController.xib */,
+			);
+			path = DetailViewController;
+			sourceTree = "<group>";
+		};
+		9A67811E24A5394100490BB1 /* ModalViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9A4758BC24A3D2B100BAC312 /* ModalViewController.h */,
+				9A4758BD24A3D2B100BAC312 /* ModalViewController.m */,
+			);
+			path = ModalViewController;
 			sourceTree = "<group>";
 		};
 		9A699F5D249D4158002ADFB5 = {

@@ -63,8 +63,8 @@
 //    topLabelConstraint.active = YES;
 
     [NSLayoutConstraint activateConstraints:@[
-        [self.questionLabel.topAnchor constraintLessThanOrEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:100],
-        [self.questionLabel.topAnchor constraintGreaterThanOrEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:20],
+        [self.questionLabel.topAnchor constraintLessThanOrEqualToAnchor:self.view.topAnchor constant:100],
+        [self.questionLabel.topAnchor constraintGreaterThanOrEqualToAnchor:self.view.topAnchor constant:20],
 
         [self.questionLabel.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
     ]];

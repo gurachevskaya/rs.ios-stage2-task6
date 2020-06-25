@@ -118,29 +118,29 @@
     
     [NSLayoutConstraint activateConstraints:@[
         
-        [self.topView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
-        [self.topView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
-        [self.topView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+        [self.topView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [self.topView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.topView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
         [self.topView.heightAnchor constraintEqualToAnchor:self.middleView.heightAnchor],
         
         [self.middleView.heightAnchor constraintEqualToAnchor:self.bottomView.heightAnchor],
-        [self.middleView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
-        [self.bottomView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor],
-        [self.middleView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
-        [self.bottomView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor],
+        [self.middleView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.bottomView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.middleView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.bottomView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
         
         [self.firstLineView.topAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
         [self.middleView.topAnchor constraintEqualToAnchor:self.firstLineView.bottomAnchor],
         [self.secondLineView.topAnchor constraintEqualToAnchor:self.middleView.bottomAnchor],
         [self.bottomView.topAnchor constraintEqualToAnchor:self.secondLineView.bottomAnchor],
-        [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+        [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
         
         
         [self.firstLineView.heightAnchor constraintEqualToConstant:2],
-        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:50],
-        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-50],
-        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:50],
-        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:-50],
+        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
+        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
         [self.secondLineView.heightAnchor constraintEqualToConstant:2]
     ]];
     

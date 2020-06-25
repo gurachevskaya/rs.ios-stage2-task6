@@ -42,7 +42,13 @@
     
     self.fullImageView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    self.closeButton = [UIButton buttonWithType:UIButtonTypeClose];
+    if (@available(iOS 13.0, *)) {
+        self.closeButton = [UIButton buttonWithType:UIButtonTypeClose];
+    } else {
+        self.closeButton = [[UIButton alloc] init];
+        self.closeButton.backgroundColor = [UIColor whiteColor];
+        [self.closeButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    }
     [self.closeButton addTarget:self action:@selector(closeButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.closeButton];
     self.closeButton.translatesAutoresizingMaskIntoConstraints = NO;

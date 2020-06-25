@@ -28,6 +28,7 @@
     
     self.dataSource = [NSMutableArray array];
     
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         PHFetchOptions *options = [[PHFetchOptions alloc] init];
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
@@ -38,20 +39,22 @@
             [self.dataSource addObject:self.assetsFetchResults[i]];
         }
        // self.tableView.dataSource = self.dataSource;
+        dispatch_async(dispatch_get_main_queue(), ^{
+               [self.tableView reloadData];
+           });
     });
+    
     
     NSDateComponentsFormatter *formatter = [[NSDateComponentsFormatter alloc] init];
                   formatter.unitsStyle = NSDateComponentsFormatterUnitsStylePositional;
                   formatter.allowedUnits = (NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitHour);
         formatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
-    
+    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-    });
+   
 }
 
 #pragma mark - Table view data source
@@ -201,4 +204,7 @@
 }
 
 
+    
+
 @end
+

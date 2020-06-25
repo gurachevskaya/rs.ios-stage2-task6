@@ -27,7 +27,7 @@ static NSString * const reuseIdentifier = @"imageCell";
     [self.collectionView registerNib:[UINib nibWithNibName:@"ImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
     
     self.dataSource = [NSMutableArray array];
-       
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
            PHFetchOptions *options = [[PHFetchOptions alloc] init];
            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
@@ -41,6 +41,8 @@ static NSString * const reuseIdentifier = @"imageCell";
               [self.collectionView reloadData];
                  });
        });
+        }];
+            
    
 }
 

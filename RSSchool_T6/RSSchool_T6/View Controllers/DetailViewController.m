@@ -11,6 +11,7 @@
 
 @interface DetailViewController ()
 - (IBAction)CustomButtonTapped:(id)sender;
+@property (strong, nonatomic) UIImage *sharingImage;
 
 @end
 
@@ -53,6 +54,7 @@
     if (self.asset.mediaType == PHAssetMediaTypeImage || self.asset.mediaType == PHAssetMediaTypeVideo) {
         [self.imageManager requestImageForAsset:self.asset targetSize:self.imageView.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage *result, NSDictionary *info)
          {
+            self.sharingImage = result;
             self.imageView.image = result;
         }];
     }
@@ -101,7 +103,18 @@
 }
 
 - (IBAction)CustomButtonTapped:(id)sender {
-    NSLog(@"Tapped");
-
+    
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.sharingImage] applicationActivities:nil];
+    
+    UIDevice *device = [[UIDevice alloc] init];
+    //if iPad
+    if ( !(device.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
+        if ([sender isKindOfClass:[UIView class]]) {
+            activityVC.popoverPresentationController.sourceView = [sender superview];
+            activityVC.popoverPresentationController.sourceRect = [sender frame];
+        }
+    }
+    [self presentViewController:activityVC animated:YES completion:nil];
 }
+       
 @end

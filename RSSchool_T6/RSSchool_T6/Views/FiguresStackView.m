@@ -43,8 +43,8 @@
     CAShapeLayer *triangle = [CAShapeLayer layer];
     UIBezierPath* trianglePath = [UIBezierPath bezierPath];
     [trianglePath moveToPoint:(CGPoint){kFigureDimension / 2,0}];
-    [trianglePath addLineToPoint:(CGPoint){kFigureDimension,kFigureDimension}];
-    [trianglePath addLineToPoint:(CGPoint){0,kFigureDimension}];
+    [trianglePath addLineToPoint:(CGPoint){70,62}];
+    [trianglePath addLineToPoint:(CGPoint){0,62}];
     [trianglePath closePath];
     
     [triangle setPath:trianglePath.CGPath];
@@ -87,23 +87,24 @@
     animation.toValue = @(1.2);
     animation.autoreverses = YES;
     animation.repeatCount = INFINITY;
+    animation.removedOnCompletion = nil;
     [self.redCircle.layer addAnimation:animation forKey:@"transform.scale"];
     
 }
 
 -(void)animateRectangle {
-    
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.5f delay:0 options:UIViewKeyframeAnimationOptionRepeat | UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAutoreverse
                      animations:^{
         
-        self.blueRectangle.center = CGPointMake(self.blueRectangle.center.x, self.blueRectangle.center.y + kFigureDimension * 0.1);
+        weakSelf.blueRectangle.center = CGPointMake(self.blueRectangle.center.x, self.blueRectangle.center.y + kFigureDimension * 0.1);
         
     } completion:^(BOOL finished) {
         
         [UIView animateWithDuration:0.5f
                          animations:^{
             
-            self.blueRectangle.center = CGPointMake(self.blueRectangle.center.x, self.blueRectangle.center.y - kFigureDimension * 0.1);
+            weakSelf.blueRectangle.center = CGPointMake(self.blueRectangle.center.x, self.blueRectangle.center.y - kFigureDimension * 0.1);
             
         } completion:^(BOOL finished) {
             
@@ -119,6 +120,7 @@
     rotationAnimation.duration = 3.f;
     rotationAnimation.cumulative = YES;
     rotationAnimation.repeatCount = INFINITY;
+    rotationAnimation.removedOnCompletion = nil;
     [self.greenTriangle.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
     
 }

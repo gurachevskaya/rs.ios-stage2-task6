@@ -29,76 +29,42 @@
 
 @implementation RSSchoolTask6ViewController
 
+// MARK: - View Controller Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.navigationItem.title = @"RSSchool Task 6";
     
     [self configureViews];
     [self configureFiguresStackView];
     [self configureButtons];
     [self configureInfo];
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self activateViewsConstraints];
+    [self activateInfoViewConstraints];
+    [self activateFiguresViewConstraints];
+    [self activateButtonConstraintsInPortraitMode];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:YES];
- [self.figuresStackView animateFigures];
+    [super viewDidAppear:YES];
+    [self.figuresStackView animateFigures];
 }
 
-#pragma mark - UI Setup
-
--(void)configureButtons {
-    self.openCVButton = [[CustomButton alloc] init];
-    [self.openCVButton setTitle:@"Open Git CV" forState:UIControlStateNormal];
-    [self.openCVButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
-    [self.openCVButton setTitleColor:[UIColor colorFromRGBNumber:@0x101010] forState:UIControlStateNormal];
-    
-    [self.openCVButton addTarget:self action:@selector(openCVButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.openCVButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.bottomView addSubview:self.openCVButton];
-    
-    [NSLayoutConstraint activateConstraints:@[
-        [self.openCVButton.topAnchor constraintEqualToAnchor:self.bottomView.topAnchor constant:30],
-        [self.openCVButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
-    ]];
-    
-    self.goToStartButton = [[CustomButton alloc] init];
-    [self.goToStartButton setTitle:@"Go to start!" forState:UIControlStateNormal];
-    [self.goToStartButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xEE686A]];
-    [self.goToStartButton setTitleColor:[UIColor colorFromRGBNumber:@0xFFFFFF] forState:UIControlStateNormal];
-    
-    [self.goToStartButton addTarget:self action:@selector(goToStartButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.goToStartButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.bottomView addSubview:self.goToStartButton];
-    
-    [NSLayoutConstraint activateConstraints:@[
-        [self.goToStartButton.bottomAnchor constraintEqualToAnchor:self.bottomView.bottomAnchor constant:-30],
-        [self.goToStartButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
-    ]];
-}
-
--(void)configureFiguresStackView {
-    self.figuresStackView = [[FiguresStackView alloc] init];
-    [self.middleView addSubview:self.figuresStackView];
-    self.figuresStackView.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.figuresStackView.centerYAnchor constraintEqualToAnchor:self.middleView.centerYAnchor],
-        [self.figuresStackView.centerXAnchor constraintEqualToAnchor:self.middleView.centerXAnchor],
-    ]];
-}
+// MARK: - UI Setup
 
 -(void)configureViews {
-    
-    self.topView  =[[UIView alloc] init];
-    self.middleView  =[[UIView alloc] init];
-    self.bottomView  =[[UIView alloc] init];
-    
+    // creating views with views separators
+    self.topView = [[UIView alloc] init];
+    self.middleView = [[UIView alloc] init];
+    self.bottomView = [[UIView alloc] init];
     self.firstLineView = [[UIView alloc] init];
     self.secondLineView = [[UIView alloc] init];
-
+    
     self.firstLineView.backgroundColor = [UIColor colorFromRGBNumber:@0x707070];
     self.secondLineView.backgroundColor = [UIColor colorFromRGBNumber:@0x707070];
     self.firstLineView.alpha = 0.5;
@@ -115,39 +81,9 @@
     self.bottomView.translatesAutoresizingMaskIntoConstraints = NO;
     self.firstLineView.translatesAutoresizingMaskIntoConstraints = NO;
     self.secondLineView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [NSLayoutConstraint activateConstraints:@[
-        
-        [self.topView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
-        [self.topView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
-        [self.topView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
-        [self.topView.heightAnchor constraintEqualToAnchor:self.middleView.heightAnchor],
-        
-        [self.middleView.heightAnchor constraintEqualToAnchor:self.bottomView.heightAnchor],
-        [self.middleView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
-        [self.bottomView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
-        [self.middleView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
-        [self.bottomView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
-        
-        [self.firstLineView.topAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
-        [self.middleView.topAnchor constraintEqualToAnchor:self.firstLineView.bottomAnchor],
-        [self.secondLineView.topAnchor constraintEqualToAnchor:self.middleView.bottomAnchor],
-        [self.bottomView.topAnchor constraintEqualToAnchor:self.secondLineView.bottomAnchor],
-        [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
-        
-        
-        [self.firstLineView.heightAnchor constraintEqualToConstant:2],
-        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
-        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
-        [self.secondLineView.heightAnchor constraintEqualToConstant:2]
-    ]];
-    
 }
 
 -(void) configureInfo {
-    
     self.infoStackView = [[UIStackView alloc] init];
     self.infoStackView.axis = UILayoutConstraintAxisVertical;
     self.infoStackView.spacing = 10;
@@ -156,6 +92,7 @@
     UILabel *modelLabel = [[UILabel alloc] init];
     UILabel *systemLabel = [[UILabel alloc] init];
     UIDevice *device = [[UIDevice alloc] init];
+    nameLabel.adjustsFontSizeToFitWidth = YES;
     
     nameLabel.text = device.name;
     modelLabel.text = device.model;
@@ -165,48 +102,110 @@
     [self.infoStackView addArrangedSubview:nameLabel];
     [self.infoStackView addArrangedSubview:modelLabel];
     [self.infoStackView addArrangedSubview:systemLabel];
+    self.appleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"apple"]];
+    self.appleView.contentMode = UIViewContentModeScaleAspectFit;
     
     [self.view addSubview:self.infoStackView];
+    [self.view addSubview:self.appleView];
     
     self.infoStackView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [NSLayoutConstraint activateConstraints:@[
-        [self.infoStackView.centerXAnchor constraintEqualToAnchor:self.topView.centerXAnchor],
-        [self.infoStackView.centerYAnchor constraintEqualToAnchor:self.topView.centerYAnchor],
-    ]];
-    
-    self.appleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"apple"]];
-    [self.view addSubview:self.appleView];
     self.appleView.translatesAutoresizingMaskIntoConstraints = NO;
+}
+
+-(void)configureFiguresStackView {
+    self.figuresStackView = [[FiguresStackView alloc] init];
+    [self.middleView addSubview:self.figuresStackView];
+    self.figuresStackView.translatesAutoresizingMaskIntoConstraints = NO;
+}
+
+-(void)configureButtons {
+    // create openCVButton
+    self.openCVButton = [[CustomButton alloc] init];
+    [self.openCVButton setTitle:@"Open Git CV" forState:UIControlStateNormal];
+    [self.openCVButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
+    [self.openCVButton setTitleColor:[UIColor colorFromRGBNumber:@0x101010] forState:UIControlStateNormal];
+    [self.openCVButton addTarget:self action:@selector(openCVButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.openCVButton.translatesAutoresizingMaskIntoConstraints = NO;
     
+    // create goToStartButton
+    self.goToStartButton = [[CustomButton alloc] init];
+    [self.goToStartButton setTitle:@"Go to start!" forState:UIControlStateNormal];
+    [self.goToStartButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xEE686A]];
+    [self.goToStartButton setTitleColor:[UIColor colorFromRGBNumber:@0xFFFFFF] forState:UIControlStateNormal];
+    [self.goToStartButton addTarget:self action:@selector(goToStartButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.goToStartButton.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    // adding as subviews
+    [self.bottomView addSubview:self.openCVButton];
+    [self.bottomView addSubview:self.goToStartButton];
+}
+
+// MARK: - Constraints activation
+
+// views
+- (void)activateViewsConstraints {
     [NSLayoutConstraint activateConstraints:@[
-           [self.appleView.trailingAnchor constraintEqualToAnchor:self.infoStackView.leadingAnchor constant:-10],
-           [self.appleView.centerYAnchor constraintEqualToAnchor:self.infoStackView.centerYAnchor],
+        [self.topView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:70],
+        [self.topView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.topView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
+        [self.topView.heightAnchor constraintEqualToAnchor:self.middleView.heightAnchor],
+        
+        [self.middleView.heightAnchor constraintEqualToAnchor:self.bottomView.heightAnchor],
+        [self.middleView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.bottomView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.middleView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
+        [self.bottomView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
+        
+        [self.firstLineView.topAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
+        [self.middleView.topAnchor constraintEqualToAnchor:self.firstLineView.bottomAnchor],
+        [self.secondLineView.topAnchor constraintEqualToAnchor:self.middleView.bottomAnchor],
+        [self.bottomView.topAnchor constraintEqualToAnchor:self.secondLineView.bottomAnchor],
+        [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-70],
+        
+        [self.firstLineView.heightAnchor constraintEqualToConstant:2],
+        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
+        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
+        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
+        [self.secondLineView.heightAnchor constraintEqualToConstant:2]
+    ]];
+}
 
-       ]];
+// info
+- (void)activateInfoViewConstraints {
+    [NSLayoutConstraint activateConstraints:@[
+        [self.appleView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.topView.leadingAnchor],
+        [self.appleView.centerYAnchor constraintEqualToAnchor:self.topView.centerYAnchor],
+        [self.appleView.topAnchor constraintGreaterThanOrEqualToAnchor:self.topView.topAnchor],
+        [self.appleView.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.topView.bottomAnchor],
+        [self.infoStackView.leadingAnchor constraintEqualToAnchor:self.appleView.trailingAnchor],
+        [self.infoStackView.centerYAnchor constraintEqualToAnchor: self.appleView.centerYAnchor],
+        [self.infoStackView.trailingAnchor constraintEqualToAnchor:self.topView.trailingAnchor]
+    ]];
+}
 
-    
+// figures
+- (void)activateFiguresViewConstraints {
+    [NSLayoutConstraint activateConstraints:@[
+        [self.figuresStackView.centerYAnchor constraintEqualToAnchor:self.middleView.centerYAnchor],
+        [self.figuresStackView.centerXAnchor constraintEqualToAnchor:self.middleView.centerXAnchor],
+    ]];
+}
+
+// buttons
+-(void)activateButtonConstraintsInPortraitMode {
+    [NSLayoutConstraint activateConstraints:@[
+        [self.openCVButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
+        [self.openCVButton.topAnchor constraintGreaterThanOrEqualToAnchor:self.bottomView.topAnchor constant:10],
+        [self.openCVButton.bottomAnchor constraintEqualToAnchor:self.goToStartButton.topAnchor constant:-10],
+        [self.goToStartButton.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.bottomView.bottomAnchor constant:-30],
+        [self.goToStartButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
+    ]];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-
-
 }
-//-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-//    [super traitCollectionDidChange:previousTraitCollection];
-//    [self setNeedsUpdateConstraints];
-//}
-
-- (void)updateConstraints {
-    if(UIDevice.currentDevice.orientation == UIDeviceOrientationPortrait) {
-        
-
-          
-    }
-}
-
 
 #pragma mark - Actions
 

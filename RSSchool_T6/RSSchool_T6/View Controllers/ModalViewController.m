@@ -54,8 +54,8 @@
     self.closeButton.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void)viewDidAppear:(BOOL)animated {
-    
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [NSLayoutConstraint activateConstraints:@[
         [self.closeButton.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
         [self.closeButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:10],

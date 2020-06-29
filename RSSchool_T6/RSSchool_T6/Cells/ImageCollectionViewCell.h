@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Photos/Photos.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ImageCollectionViewCell : UICollectionViewCell
 @property (strong, nonatomic) IBOutlet UIImageView *previewImageView;
+@property (assign, nonatomic) PHImageRequestID imageRequestID;
 
 @end
 

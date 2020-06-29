@@ -29,8 +29,6 @@
 
 @implementation RSSchoolTask6ViewController
 
-// MARK: - View Controller Lifecycle
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"RSSchool Task 6";
@@ -55,7 +53,7 @@
     [self.figuresStackView animateFigures];
 }
 
-// MARK: - UI Setup
+#pragma mark - UI Setup
 
 -(void)configureViews {
     // creating views with views separators
@@ -86,7 +84,8 @@
 -(void) configureInfo {
     self.infoStackView = [[UIStackView alloc] init];
     self.infoStackView.axis = UILayoutConstraintAxisVertical;
-    self.infoStackView.spacing = 10;
+    self.infoStackView.distribution = UIStackViewDistributionEqualSpacing;
+//    self.infoStackView.spacing = 10;
     
     UILabel *nameLabel = [[UILabel alloc] init];
     UILabel *modelLabel = [[UILabel alloc] init];
@@ -140,7 +139,7 @@
     [self.bottomView addSubview:self.goToStartButton];
 }
 
-// MARK: - Constraints activation
+#pragma mark - Constraints activation
 
 // views
 - (void)activateViewsConstraints {
@@ -174,13 +173,16 @@
 // info
 - (void)activateInfoViewConstraints {
     [NSLayoutConstraint activateConstraints:@[
-        [self.appleView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.topView.leadingAnchor],
+        [self.infoStackView.centerYAnchor constraintEqualToAnchor: self.topView.centerYAnchor],
+        [self.infoStackView.centerXAnchor constraintGreaterThanOrEqualToAnchor: self.topView.centerXAnchor],
+        [self.infoStackView.bottomAnchor constraintLessThanOrEqualToAnchor: self.topView.bottomAnchor],
+        
+        [self.appleView.leadingAnchor constraintLessThanOrEqualToAnchor:self.topView.leadingAnchor],
         [self.appleView.centerYAnchor constraintEqualToAnchor:self.topView.centerYAnchor],
-        [self.appleView.topAnchor constraintGreaterThanOrEqualToAnchor:self.topView.topAnchor],
-        [self.appleView.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.topView.bottomAnchor],
-        [self.infoStackView.leadingAnchor constraintEqualToAnchor:self.appleView.trailingAnchor],
-        [self.infoStackView.centerYAnchor constraintEqualToAnchor: self.appleView.centerYAnchor],
-        [self.infoStackView.trailingAnchor constraintEqualToAnchor:self.topView.trailingAnchor]
+        [self.appleView.topAnchor constraintGreaterThanOrEqualToAnchor:self.topView.topAnchor constant:5],
+        [self.appleView.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.topView.bottomAnchor constant:5],
+        [self.appleView.trailingAnchor constraintEqualToAnchor:self.infoStackView.leadingAnchor constant:-10],
+
     ]];
 }
 

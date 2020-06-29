@@ -10,7 +10,6 @@
 #import "CustomButton.h"
 #import <Photos/Photos.h>
 
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DetailViewController : UIViewController
@@ -19,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *modificationDateTextLabel;
 @property (strong, nonatomic) IBOutlet UILabel *typeTextLabel;
 @property (strong, nonatomic) IBOutlet CustomButton *shareButton;
+@property (strong, nonatomic) IBOutlet UIButton *playButton;
 @property (strong, nonatomic) PHAsset *asset;
 @property (strong, nonatomic) IBOutlet UILabel *creationDateValueLabel;
 @property (strong, nonatomic) IBOutlet UILabel *modificationDateValueLabel;

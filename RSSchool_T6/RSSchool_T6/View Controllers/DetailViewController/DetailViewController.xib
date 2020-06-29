@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -14,6 +14,7 @@
                 <outlet property="imageView" destination="WZT-sj-TTx" id="jP5-Cs-WOI"/>
                 <outlet property="modificationDateTextLabel" destination="ejN-v7-b8Q" id="bCr-sX-Vht"/>
                 <outlet property="modificationDateValueLabel" destination="CUC-sq-YzP" id="j3V-QN-zhW"/>
+                <outlet property="playButton" destination="FDW-VT-neY" id="THe-qN-njF"/>
                 <outlet property="shareButton" destination="JtE-ly-Lnv" id="kZ1-vu-kYm"/>
                 <outlet property="typeLabel" destination="WNa-5j-Xf8" id="JzS-o5-ZfO"/>
                 <outlet property="typeTextLabel" destination="pbF-Tk-7Be" id="cli-vF-LIE"/>
@@ -84,6 +85,19 @@
                                     <color key="textColor" red="0.062745098039215685" green="0.062745098039215685" blue="0.062745098039215685" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <button hidden="YES" opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FDW-VT-neY">
+                                    <rect key="frame" x="132" y="222.5" width="150" height="150"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="150" id="Gsa-vi-vEH"/>
+                                        <constraint firstAttribute="height" constant="150" id="rBe-XP-Mz6"/>
+                                    </constraints>
+                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <inset key="contentEdgeInsets" minX="50" minY="50" maxX="50" maxY="50"/>
+                                    <state key="normal" title="Play" image="play_button"/>
+                                    <connections>
+                                        <action selector="playVideoButtonClicked:" destination="-1" eventType="touchUpInside" id="HHq-Yt-wTF"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             <constraints>
@@ -98,6 +112,7 @@
                                 <constraint firstItem="CUC-sq-YzP" firstAttribute="leading" secondItem="ejN-v7-b8Q" secondAttribute="trailing" constant="10" id="E2W-a4-k0m"/>
                                 <constraint firstItem="ejN-v7-b8Q" firstAttribute="leading" secondItem="Hvc-k6-2vF" secondAttribute="leading" constant="26" id="EeQ-PK-Guq"/>
                                 <constraint firstItem="JtE-ly-Lnv" firstAttribute="centerX" secondItem="Hvc-k6-2vF" secondAttribute="centerX" id="FpC-c5-fWt"/>
+                                <constraint firstItem="FDW-VT-neY" firstAttribute="centerX" secondItem="Hvc-k6-2vF" secondAttribute="centerX" id="H81-fs-Bal"/>
                                 <constraint firstItem="WNa-5j-Xf8" firstAttribute="leading" secondItem="pbF-Tk-7Be" secondAttribute="trailing" constant="10" id="K9l-PN-Mxl"/>
                                 <constraint firstItem="Rds-AV-bId" firstAttribute="top" secondItem="WZT-sj-TTx" secondAttribute="bottom" constant="42" id="Nyq-qI-2TI"/>
                                 <constraint firstItem="WNa-5j-Xf8" firstAttribute="centerY" secondItem="pbF-Tk-7Be" secondAttribute="centerY" id="OBx-4q-Reu"/>
@@ -109,6 +124,7 @@
                                 <constraint firstItem="WZT-sj-TTx" firstAttribute="leading" secondItem="Hvc-k6-2vF" secondAttribute="leading" constant="16" id="hRN-XR-rJb"/>
                                 <constraint firstItem="q28-yW-aMG" firstAttribute="centerY" secondItem="Rds-AV-bId" secondAttribute="centerY" id="pQ1-J0-zRc"/>
                                 <constraint firstItem="CUC-sq-YzP" firstAttribute="centerY" secondItem="ejN-v7-b8Q" secondAttribute="centerY" id="pYA-ZM-uKq"/>
+                                <constraint firstItem="FDW-VT-neY" firstAttribute="centerY" secondItem="WZT-sj-TTx" secondAttribute="centerY" id="yqc-Yn-v0c"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -133,4 +149,7 @@
             <point key="canvasLocation" x="-375.36231884057975" y="46.875"/>
         </view>
     </objects>
+    <resources>
+        <image name="play_button" width="512" height="512"/>
+    </resources>
 </document>

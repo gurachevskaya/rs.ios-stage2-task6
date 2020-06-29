@@ -56,6 +56,7 @@
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     float aspectRatio = self.fullImageView.image.size.height/self.fullImageView.image.size.width;
 
     [NSLayoutConstraint activateConstraints:@[
@@ -64,12 +65,15 @@
         [self.closeButton.widthAnchor constraintEqualToConstant:40],
         [self.closeButton.heightAnchor constraintEqualToConstant:40],
         
+        [self.fullImageView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.fullImageView.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor constant:10],
+
         [self.fullImageView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.view.leadingAnchor constant:10],
         [self.fullImageView.trailingAnchor constraintLessThanOrEqualToAnchor:self.view.trailingAnchor constant:-10],
-        [self.fullImageView.centerYAnchor constraintLessThanOrEqualToAnchor:self.view.centerYAnchor constant:10],
         [self.fullImageView.topAnchor constraintGreaterThanOrEqualToAnchor:self.view.topAnchor constant:50],
         [self.fullImageView.bottomAnchor constraintLessThanOrEqualToAnchor:self.view.bottomAnchor constant:-50],
-        [self.fullImageView.heightAnchor constraintEqualToAnchor:self.fullImageView.widthAnchor multiplier:aspectRatio],
+        [self.fullImageView.heightAnchor constraintEqualToAnchor:self.fullImageView.widthAnchor multiplier:aspectRatio]
+
     ]];
 }
 

@@ -21,36 +21,23 @@
     [super viewDidLoad];
     self.navigationItem.title = @"Info";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"TableViewCell" bundle:nil] forCellReuseIdentifier:@"customCell"];
+    [self configureFormatter];
     
     __weak typeof(self) weakSelf = self;
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        PHFetchOptions *options = [[PHFetchOptions alloc] init];
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-        
-        weakSelf.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-               [weakSelf.tableView reloadData];
-           });
-    });
-    
-    
-    NSDateComponentsFormatter *formatter = [[NSDateComponentsFormatter alloc] init];
-                  formatter.unitsStyle = NSDateComponentsFormatterUnitsStylePositional;
-                  formatter.allowedUnits = (NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitHour);
-        formatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+            
+            weakSelf.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.tableView reloadData];
+            });
+        });
     }];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTable) name:UIApplicationDidBecomeActiveNotification object:nil];
-    
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-   
 }
 
 #pragma mark - Table view data source
@@ -64,23 +51,21 @@
         
     self.imageManager = [[PHCachingImageManager alloc] init];
     PHAsset *asset = self.assetsFetchResults[indexPath.row];
+        
+    __weak typeof(cell) weakCell = cell;
+    cell.contentRequestID = [asset requestContentEditingInputWithOptions:nil completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
+        if (contentEditingInput.fullSizeImageURL) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                weakCell.namelabel.text = [contentEditingInput.fullSizeImageURL lastPathComponent];
+            });
+        }
+    }];
     
-    PHContentEditingInputRequestOptions *editOptions = [[PHContentEditingInputRequestOptions alloc] init];
-      [asset requestContentEditingInputWithOptions:editOptions completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
-          if (contentEditingInput.fullSizeImageURL) {
-          cell.namelabel.text = [contentEditingInput.fullSizeImageURL lastPathComponent];
-          }
-      }];
-    
-    __block UIImage *mainImage = [[UIImage alloc] init];
-    [self.imageManager requestImageForAsset:asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage *result, NSDictionary *info)
-               {
-                   mainImage = result;
-               }];
-    
-//    [self.imageManager requestPlayerItemForVideo:asset options:nil resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
-//        <#code#>
-//    }];
+     cell.imageRequestID = [self.imageManager requestImageForAsset:asset targetSize:cell.mainImage.image.size contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage *result, NSDictionary *info){
+         dispatch_async(dispatch_get_main_queue(), ^{
+             weakCell.mainImage.image = result;
+         });
+     }];
     
     switch (asset.mediaType) {
         case PHAssetMediaTypeUnknown: {
@@ -91,49 +76,63 @@
         }
         case PHAssetMediaTypeImage: {
             cell.smallImage.image = [UIImage imageNamed:@"image"];
-            cell.mainImage.image = mainImage;
             cell.resolutionLabel.text = [NSString stringWithFormat:@"%lux%lu",(unsigned long)asset.pixelWidth, asset.pixelHeight];
             break;
         }
         case PHAssetMediaTypeVideo: {
             cell.smallImage.image = [UIImage imageNamed:@"video"];
-            cell.mainImage.image = mainImage;
             cell.resolutionLabel.text = [NSString stringWithFormat:@"%lux%lu %@",(unsigned long)asset.pixelWidth, asset.pixelHeight, [self.formatter stringFromTimeInterval:asset.duration]];
             break;
         }
         case PHAssetMediaTypeAudio: {
             cell.smallImage.image = [UIImage imageNamed:@"audio"];
             cell.mainImage.image = [UIImage imageNamed:@"icons8-musical-100"];
-          
             cell.resolutionLabel.text = [NSString stringWithFormat:@"%@", [self.formatter stringFromTimeInterval:asset.duration]];
             break;
         }
     }
     return cell;
-                                         
 }
-
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
      PHAsset *asset = self.assetsFetchResults[indexPath.item];
 
-    [self.navigationController pushViewController:[[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil asset:asset] animated:YES];    
+    [self.navigationController pushViewController:[[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:[NSBundle mainBundle] asset:asset] animated:YES];
 }
 
--(void)updateTable {
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        PHFetchOptions *options = [[PHFetchOptions alloc] init];
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-        
-        weakSelf.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
-    });
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [weakSelf.tableView reloadData];
-    });
-}
+//#pragma mark - Table view delegate
+//
+//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    {
+//        PHAsset *asset = self.assetsFetchResults[indexPath.row];
+//
+//        PHImageRequestID imageRequestID = ((TableViewCell *)cell).imageRequestID;
+//        PHContentEditingInputRequestID contentRequestID = ((TableViewCell *)cell).contentRequestID;
+//        if(imageRequestID != 0)
+//        {
+//            [self.imageManager cancelImageRequest:imageRequestID];
+//            [((TableViewCell *)cell).imageView setImage:nil];
+//        }
+//        if(contentRequestID != 0)
+//        {
+//            [asset cancelContentEditingInputRequest:contentRequestID];
+//            ((TableViewCell *)cell).namelabel.text = @"";
+//            ((TableViewCell *)cell).resolutionLabel.text = @"";
+//        }
+//    }
+//}
 
+
+#pragma mark - Helpers
+
+-(void) configureFormatter {
+    NSDateComponentsFormatter *formatter = [[NSDateComponentsFormatter alloc] init];
+    formatter.unitsStyle = NSDateComponentsFormatterUnitsStylePositional;
+    formatter.allowedUnits = (NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitHour);
+    formatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+    self.formatter = formatter;
+}
 
 #pragma mark - PHPhotoLibraryChangeObserver
 

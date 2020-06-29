@@ -20,5 +20,11 @@
 
 }
 
+-(void)prepareForReuse {
+    
+    [super prepareForReuse];
+    self.selectedBackgroundView = nil;
+
+}
 
 @end

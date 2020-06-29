@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Photos/Photos.h>
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *namelabel;
 @property (strong, nonatomic) IBOutlet UIImageView *smallImage;
 @property (strong, nonatomic) IBOutlet UILabel *resolutionLabel;
+@property (assign, nonatomic) PHImageRequestID imageRequestID;
+@property (assign, nonatomic) PHContentEditingInputRequestID contentRequestID;
 
 @end
 

@@ -8,10 +8,13 @@
 
 #import "DetailViewController.h"
 #import "UIColor+ColorFromRGB.h"
+#import <AVKit/AVKit.h>
+
 
 @interface DetailViewController ()
 - (IBAction)CustomButtonTapped:(id)sender;
 @property (strong, nonatomic) UIImage *sharingImage;
+@property (strong, nonatomic) AVPlayerItem *sharingVideo;
 
 @end
 
@@ -27,35 +30,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back"]
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self.navigationController
                                                                   action:@selector(popViewControllerAnimated:)];
     self.navigationItem.leftBarButtonItem = backButton;
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor colorFromRGBNumber:@0x101010];
-
-    PHContentEditingInputRequestOptions *editOptions = [[PHContentEditingInputRequestOptions alloc] init];
-         [self.asset requestContentEditingInputWithOptions:editOptions completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
+    
+    __weak typeof(self) weakSelf = self;
+         [self.asset requestContentEditingInputWithOptions:nil completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
              if (contentEditingInput.fullSizeImageURL) {
-             self.navigationItem.title = [contentEditingInput.fullSizeImageURL lastPathComponent];
+             weakSelf.navigationItem.title = [contentEditingInput.fullSizeImageURL lastPathComponent];
              }
          }];
+    
     [self conFigureImageView];
     [self configureLabels];
     [self configureButton];
 }
 
-
 -(void)conFigureImageView {
     
     self.imageManager = [[PHCachingImageManager alloc] init];
-    
+    __weak typeof(self) weakSelf = self;
     if (self.asset.mediaType == PHAssetMediaTypeImage || self.asset.mediaType == PHAssetMediaTypeVideo) {
+        
+        if (self.asset.mediaType == PHAssetMediaTypeVideo) {
+            self.playButton.hidden = NO;
+        }
+        
         [self.imageManager requestImageForAsset:self.asset targetSize:self.imageView.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage *result, NSDictionary *info)
          {
-            self.sharingImage = result;
-            self.imageView.image = result;
+            weakSelf.sharingImage = result;
+            weakSelf.imageView.image = result;
         }];
     }
     
@@ -102,9 +109,15 @@
     }
 }
 
+- (IBAction)playVideoButtonClicked:(id)sender {
+    [self playVideo];
+}
+
 - (IBAction)CustomButtonTapped:(id)sender {
     
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.sharingImage] applicationActivities:nil];
+    UIActivityViewController *activityVC;
+    
+    activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.sharingImage] applicationActivities:nil];
     
     UIDevice *device = [[UIDevice alloc] init];
     //if iPad
@@ -115,6 +128,21 @@
         }
     }
     [self presentViewController:activityVC animated:YES completion:nil];
+}
+
+-(void) playVideo {
+    
+    [self.imageManager requestPlayerItemForVideo:self.asset options:nil resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            AVPlayerViewController *playerViewController = [[AVPlayerViewController alloc] init];
+            AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+            playerViewController.player = player;
+            [self presentViewController:playerViewController animated:YES completion:^{
+                [playerViewController.player play];
+            }];
+        });
+    }];
 }
        
 @end

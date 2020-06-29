@@ -9,6 +9,8 @@
 #import "GalleryCollectionViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ModalViewController.h"
+#import <AVKit/AVKit.h>
+
 
 @interface GalleryCollectionViewController ()
 
@@ -52,25 +54,57 @@ static NSString * const reuseIdentifier = @"imageCell";
     ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     self.imageManager = [[PHCachingImageManager alloc] init];
-    PHAsset *asset = self.assetsFetchResults[indexPath.row];
-
-    [self.imageManager requestImageForAsset:asset targetSize:PHImageManagerMaximumSize contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage *result, NSDictionary *info)
-               {
-                   cell.previewImageView.image = result;
-               }];
+        
+    PHAsset *asset = self.assetsFetchResults[indexPath.item];
+    
+    PHImageRequestOptions *requestOptions = [PHImageRequestOptions new];
+//    requestOptions.synchronous = YES;
+    // requestOptions.resizeMode = PHImageRequestOptionsResizeModeFast;
+     [requestOptions setDeliveryMode:PHImageRequestOptionsDeliveryModeHighQualityFormat];
+    
+    __weak typeof(cell) weakCell = cell;
+    cell.imageRequestID = [self.imageManager requestImageForAsset:asset targetSize:cell.previewImageView.frame.size contentMode:PHImageContentModeAspectFill options:requestOptions resultHandler:^(UIImage *result, NSDictionary *info) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakCell.previewImageView.image = result;
+        });
+    }];
     
     return cell;
 }
+
 
 #pragma mark <UICollectionViewDelegate>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     PHAsset *asset = self.assetsFetchResults[indexPath.row];
-    if (asset.mediaType == PHAssetMediaTypeVideo || asset.mediaType == PHAssetMediaTypeImage) {
+    
+    if (asset.mediaType == PHAssetMediaTypeImage) {
         [self presentViewController:[[ModalViewController alloc] initWithAsset:asset] animated:YES completion:nil];
+        
+    } else if (asset.mediaType == PHAssetMediaTypeVideo) {
+        [self.imageManager requestPlayerItemForVideo:asset options:nil resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                AVPlayerViewController *playerViewController = [[AVPlayerViewController alloc] init];
+                AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+                playerViewController.player = player;
+                [self presentViewController:playerViewController animated:YES completion:^{
+                    [playerViewController.player play];
+                }];
+            });
+        }];
     }
 }
     
+//- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    PHImageRequestID requestId = ((ImageCollectionViewCell *)cell).imageRequestID;
+//    if(requestId != 0)
+//    {
+//        [self.imageManager cancelImageRequest:requestId];
+//       // [((ImageCollectionViewCell *)cell).previewImageView setImage:nil];
+//    }
+//}
+
 #pragma mark - UICollectionViewLayout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -78,5 +112,11 @@ static NSString * const reuseIdentifier = @"imageCell";
     double resultSizeOfItem = sizeOfItem - 15;
     return  CGSizeMake (resultSizeOfItem, resultSizeOfItem);
 }
+
+//- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+//    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+//
+//    [self.collectionView.collectionViewLayout invalidateLayout];
+//}
 
 @end

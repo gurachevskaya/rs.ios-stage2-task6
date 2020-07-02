@@ -10,7 +10,7 @@
 #import "TableViewCell.h"
 #import "DetailViewController.h"
 
-@interface InfoTableViewController ()
+@interface InfoTableViewController () <PHPhotoLibraryChangeObserver>
 @property(strong, nonatomic) NSDateComponentsFormatter *formatter;
 
 @end
@@ -27,17 +27,28 @@
     
     __weak typeof(self) weakSelf = self;
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        if (PHAuthorizationStatusAuthorized) {
+
+            [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
             
-            weakSelf.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.tableView reloadData];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                PHFetchOptions *options = [[PHFetchOptions alloc] init];
+                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+                
+                weakSelf.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.tableView reloadData];
+                });
             });
-        });
+        } else {
+            
+        }
     }];
+}
+
+- (void)dealloc {
+    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
 
 #pragma mark - Table view data source
@@ -124,6 +135,14 @@
 //}
 
 
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+
+    // Update cached assets for the new visible area.
+ //   [self updateCachedAssets];
+}
+
 #pragma mark - Helpers
 
 -(void) configureFormatter {
@@ -136,77 +155,69 @@
 
 #pragma mark - PHPhotoLibraryChangeObserver
 
-//- (void)photoLibraryDidChange:(nonnull PHChange *)changeInstance {
-//
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        PHFetchOptions *options = [[PHFetchOptions alloc] init];
-//        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-//
-//        self.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
-//
-//    });
-
-//    PHFetchResultChangeDetails *details = [[PHFetchResultChangeDetails alloc] init];
-//    details.fetchResultAfterChanges
-//    + (instancetype)changeDetailsFromFetchResult:(PHFetchResult<ObjectType> *)fromResult toFetchResult:(PHFetchResult<ObjectType> *)toResult changedObjects:(NSArray<ObjectType> *)changedObjects;
-
-   // guard let collectionView = self.collectionView else { return }
-    // Change notifications may be made on a background queue.
-    // Re-dispatch to the main queue to update the UI.
-//
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//          // Check for changes to the displayed album itself
-//                 // (its existence and metadata, not its member assets).
-//        self.assetsFetchResults = [self.assetsFetchResults ]
-//
-
-
-//
-//       });
-//
-
-//        if let albumChanges = changeInstance.changeDetails(for: assetCollection) {
-//            // Fetch the new album and update the UI accordingly.
-//            assetCollection = albumChanges.objectAfterChanges! as! PHAssetCollection
-//            navigationController?.navigationItem.title = assetCollection.localizedTitle
-//        }
-//        // Check for changes to the list of assets (insertions, deletions, moves, or updates).
-//        if let changes = changeInstance.changeDetails(for: fetchResult) {
-//            // Keep the new fetch result for future use.
-//            fetchResult = changes.fetchResultAfterChanges
-//            if changes.hasIncrementalChanges {
-//                // If there are incremental diffs, animate them in the collection view.
-//                collectionView.performBatchUpdates({
-//                    // For indexes to make sense, updates must be in this order:
-//                    // delete, insert, reload, move
-//                    if let removed = changes.removedIndexes where removed.count > 0 {
-//                        collectionView.deleteItems(at: removed.map { IndexPath(item: $0, section:0) })
-//                    }
-//                    if let inserted = changes.insertedIndexes where inserted.count > 0 {
-//                        collectionView.insertItems(at: inserted.map { IndexPath(item: $0, section:0) })
-//                    }
-//                    if let changed = changes.changedIndexes where changed.count > 0 {
-//                        collectionView.reloadItems(at: changed.map { IndexPath(item: $0, section:0) })
-//                    }
-//                    changes.enumerateMoves { fromIndex, toIndex in
-//                        collectionView.moveItem(at: IndexPath(item: fromIndex, section: 0),
-//                                                to: IndexPath(item: toIndex, section: 0))
-//                    }
-//                })
-//            } else {
-//                // Reload the collection view if incremental diffs are not available.
-//                collectionView.reloadData()
-//            }
-//        }
-
-//self.assetsFetchResults = [PHAsset fetchAssetsWithOptions:options];
-//   dispatch_async(dispatch_get_main_queue(), ^{
-//        [self.tableView reloadData];
-//    });
-
-
-
+- (void)photoLibraryDidChange:(nonnull PHChange *)changeInstance {
     
+    // Check if there are changes to the assets we are showing.
+    PHFetchResultChangeDetails *tableChanges = [changeInstance changeDetailsForFetchResult:self.assetsFetchResults];
+    if (tableChanges == nil) {
+        return;
+    }
+    
+    /*
+     Change notifications may be made on a background queue. Re-dispatch to the
+     main queue before acting on the change as we'll be updating the UI.
+     */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Get the new fetch result.
+        self.assetsFetchResults = [tableChanges fetchResultAfterChanges];
+        
+        UITableView *tableView = self.tableView;
+        
+        if (![tableChanges hasIncrementalChanges] || [tableChanges hasMoves]) {
+            // Reload the collection view if the incremental diffs are not available
+            [tableView reloadData];
+            
+        } else {
+            /*
+             Tell the collection view to animate insertions and deletions if we
+             have incremental diffs.
+             */
+            [tableView performBatchUpdates:^{
+                NSIndexSet *removedIndexes = [tableChanges removedIndexes];
+                if ([removedIndexes count] > 0) {
+                    
+                    NSMutableArray *removedPaths = [[NSMutableArray alloc] init];
+                    
+                    if (removedPaths){
+                        [removedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                            [removedPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+                        }];
+                        [tableView deleteRowsAtIndexPaths:removedPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                    }
+                }
+                
+                NSIndexSet *insertedIndexes = [tableChanges insertedIndexes];
+                if ([insertedIndexes count] > 0) {
+                    NSMutableArray *insertedPaths = [[NSMutableArray alloc] init];
+                    [insertedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                        [insertedPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+                    }];
+                    [tableView insertRowsAtIndexPaths:insertedPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
+                
+                NSIndexSet *changedIndexes = [tableChanges changedIndexes];
+                if ([changedIndexes count] > 0) {
+                    NSMutableArray *changedPaths = [[NSMutableArray alloc] init];
+                    [changedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                        [changedPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+                    }];
+                    [tableView reloadRowsAtIndexPaths:changedPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                }
+            } completion:NULL];
+        }
+        //   [self resetCachedAssets];
+    });
+}
 
 @end
 

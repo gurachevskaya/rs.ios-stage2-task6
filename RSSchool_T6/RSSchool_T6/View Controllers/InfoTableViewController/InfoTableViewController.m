@@ -185,38 +185,33 @@
             [tableView performBatchUpdates:^{
                 NSIndexSet *removedIndexes = [tableChanges removedIndexes];
                 if ([removedIndexes count] > 0) {
-                    
-                    NSMutableArray *removedPaths = [[NSMutableArray alloc] init];
-                    
-                    if (removedPaths){
-                        [removedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                            [removedPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
-                        }];
-                        [tableView deleteRowsAtIndexPaths:removedPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-                    }
+                [tableView deleteRowsAtIndexPaths:[self indexPathsFromIndexSet:removedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
                 
                 NSIndexSet *insertedIndexes = [tableChanges insertedIndexes];
                 if ([insertedIndexes count] > 0) {
-                    NSMutableArray *insertedPaths = [[NSMutableArray alloc] init];
-                    [insertedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                        [insertedPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
-                    }];
-                    [tableView insertRowsAtIndexPaths:insertedPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [tableView insertRowsAtIndexPaths:[self indexPathsFromIndexSet:insertedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
                 
                 NSIndexSet *changedIndexes = [tableChanges changedIndexes];
                 if ([changedIndexes count] > 0) {
-                    NSMutableArray *changedPaths = [[NSMutableArray alloc] init];
-                    [changedIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-                        [changedPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
-                    }];
-                    [tableView reloadRowsAtIndexPaths:changedPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [tableView reloadRowsAtIndexPaths:[self indexPathsFromIndexSet:changedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
             } completion:NULL];
         }
         //   [self resetCachedAssets];
     });
+}
+
+-(NSArray *) indexPathsFromIndexSet:(NSIndexSet *)indexSet {
+        
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [paths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
+    
+    return paths;
 }
 
 @end

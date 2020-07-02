@@ -12,7 +12,7 @@
 #import <AVKit/AVKit.h>
 
 
-@interface GalleryCollectionViewController ()
+@interface GalleryCollectionViewController () <PHPhotoLibraryChangeObserver>
 
 @end
 
@@ -30,6 +30,9 @@ static NSString * const reuseIdentifier = @"imageCell";
     
     __weak typeof(self) weakSelf = self;
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        
+        [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
@@ -43,6 +46,9 @@ static NSString * const reuseIdentifier = @"imageCell";
     }];
 }
 
+- (void)dealloc {
+    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
+}
 
 #pragma mark <UICollectionViewDataSource>
 
@@ -118,5 +124,66 @@ static NSString * const reuseIdentifier = @"imageCell";
 //
 //    [self.collectionView.collectionViewLayout invalidateLayout];
 //}
+
+#pragma mark - PHPhotoLibraryChangeObserver
+
+- (void)photoLibraryDidChange:(nonnull PHChange *)changeInstance {
+    
+    // Check if there are changes to the assets we are showing.
+    PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:self.assetsFetchResults];
+    if (collectionChanges == nil) {
+        return;
+    }
+    
+    /*
+     Change notifications may be made on a background queue. Re-dispatch to the
+     main queue before acting on the change as we'll be updating the UI.
+     */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Get the new fetch result.
+        self.assetsFetchResults = [collectionChanges fetchResultAfterChanges];
+        
+        UICollectionView *collectionView = self.collectionView;
+        
+        if (![collectionChanges hasIncrementalChanges] || [collectionChanges hasMoves]) {
+            // Reload the collection view if the incremental diffs are not available
+            [collectionView reloadData];
+            
+        } else {
+            /*
+             Tell the collection view to animate insertions and deletions if we
+             have incremental diffs.
+             */
+            [collectionView performBatchUpdates:^{
+                NSIndexSet *removedIndexes = [collectionChanges removedIndexes];
+                if ([removedIndexes count] > 0) {
+                    [collectionView deleteItemsAtIndexPaths:[self indexPathsFromIndexSet:removedIndexes]];
+                }
+                
+                NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
+                if ([insertedIndexes count] > 0) {
+                    [collectionView insertItemsAtIndexPaths:[self indexPathsFromIndexSet:insertedIndexes]];
+                }
+                
+                NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
+                if ([changedIndexes count] > 0) {
+                    [collectionView reloadItemsAtIndexPaths:[self indexPathsFromIndexSet:changedIndexes]];
+                }
+            } completion:NULL];
+        }
+        //   [self resetCachedAssets];
+    });
+}
+
+-(NSArray *) indexPathsFromIndexSet:(NSIndexSet *)indexSet {
+        
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [paths addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
+    }];
+    
+    return paths;
+}
 
 @end

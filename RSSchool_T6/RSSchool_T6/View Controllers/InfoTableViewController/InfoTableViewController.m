@@ -12,10 +12,11 @@
 
 @interface InfoTableViewController () <PHPhotoLibraryChangeObserver>
 @property(strong, nonatomic) NSDateComponentsFormatter *formatter;
-
 @end
 
 @implementation InfoTableViewController
+
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -47,15 +48,18 @@
     }];
 }
 
+
 - (void)dealloc {
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
+
 
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.assetsFetchResults count];
 }
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"customCell" forIndexPath:indexPath];
@@ -103,18 +107,20 @@
     return cell;
 }
 
+
 #pragma mark - Table view delegate
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
      PHAsset *asset = self.assetsFetchResults[indexPath.item];
 
     [self.navigationController pushViewController:[[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:[NSBundle mainBundle] asset:asset] animated:YES];
 }
 
+
 #pragma mark - Helpers
 
--(void) configureFormatter {
+- (void)configureFormatter {
     NSDateComponentsFormatter *formatter = [[NSDateComponentsFormatter alloc] init];
     formatter.unitsStyle = NSDateComponentsFormatterUnitsStylePositional;
     formatter.allowedUnits = (NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitHour);
@@ -122,39 +128,33 @@
     self.formatter = formatter;
 }
 
+
 #pragma mark - PHPhotoLibraryChangeObserver
 
 - (void)photoLibraryDidChange:(nonnull PHChange *)changeInstance {
     
-    // Check if there are changes to the assets we are showing.
     PHFetchResultChangeDetails *tableChanges = [changeInstance changeDetailsForFetchResult:self.assetsFetchResults];
     if (tableChanges == nil) {
         return;
     }
     
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
+    //Change notifications may be made on a background queue. Re-dispatch to the main queue before acting on the change as we'll be updating the UI.
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Get the new fetch result.
+
         self.assetsFetchResults = [tableChanges fetchResultAfterChanges];
         
         UITableView *tableView = self.tableView;
         
         if (![tableChanges hasIncrementalChanges] || [tableChanges hasMoves]) {
-            // Reload the collection view if the incremental diffs are not available
+           
             [tableView reloadData];
             
         } else {
-            /*
-             Tell the collection view to animate insertions and deletions if we
-             have incremental diffs.
-             */
+           
             [tableView performBatchUpdates:^{
                 NSIndexSet *removedIndexes = [tableChanges removedIndexes];
                 if ([removedIndexes count] > 0) {
-                [tableView deleteRowsAtIndexPaths:[self indexPathsFromIndexSet:removedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [tableView deleteRowsAtIndexPaths:[self indexPathsFromIndexSet:removedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
                 
                 NSIndexSet *insertedIndexes = [tableChanges insertedIndexes];
@@ -171,14 +171,12 @@
     });
 }
 
--(NSArray *) indexPathsFromIndexSet:(NSIndexSet *)indexSet {
-        
-    NSMutableArray *paths = [[NSMutableArray alloc] init];
 
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [paths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+- (NSArray *)indexPathsFromIndexSet:(NSIndexSet *)indexSet {
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+        [paths addObject:[NSIndexPath indexPathForRow:index inSection:0]];
     }];
-    
     return paths;
 }
 

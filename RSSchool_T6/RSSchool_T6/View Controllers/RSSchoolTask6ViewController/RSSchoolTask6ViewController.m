@@ -21,13 +21,13 @@
 @property (strong, nonatomic) UIView *bottomView;
 @property (strong, nonatomic) UIView *firstLineView;
 @property (strong, nonatomic) UIView *secondLineView;
-
 @property (strong, nonatomic) UIStackView *infoStackView;
 @property (strong, nonatomic) UIImageView *appleView;
-
 @end
 
 @implementation RSSchoolTask6ViewController
+
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -39,6 +39,7 @@
     [self configureInfo];
 }
 
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -48,14 +49,16 @@
     [self activateButtonConstraintsInPortraitMode];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     [self.figuresStackView animateFigures];
 }
 
+
 #pragma mark - UI Setup
 
--(void)configureViews {
+- (void)configureViews {
     // creating views with views separators
     self.topView = [[UIView alloc] init];
     self.middleView = [[UIView alloc] init];
@@ -81,7 +84,8 @@
     self.secondLineView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void) configureInfo {
+
+- (void)configureInfo {
     self.infoStackView = [[UIStackView alloc] init];
     self.infoStackView.axis = UILayoutConstraintAxisVertical;
     self.infoStackView.distribution = UIStackViewDistributionEqualSpacing;
@@ -111,13 +115,15 @@
     self.appleView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void)configureFiguresStackView {
+
+- (void)configureFiguresStackView {
     self.figuresStackView = [[FiguresStackView alloc] init];
     [self.middleView addSubview:self.figuresStackView];
     self.figuresStackView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void)configureButtons {
+
+- (void)configureButtons {
     // create openCVButton
     self.openCVButton = [[CustomButton alloc] init];
     [self.openCVButton setTitle:@"Open Git CV" forState:UIControlStateNormal];
@@ -138,6 +144,7 @@
     [self.bottomView addSubview:self.openCVButton];
     [self.bottomView addSubview:self.goToStartButton];
 }
+
 
 #pragma mark - Constraints activation
 
@@ -195,7 +202,7 @@
 }
 
 // buttons
--(void)activateButtonConstraintsInPortraitMode {
+- (void)activateButtonConstraintsInPortraitMode {
     [NSLayoutConstraint activateConstraints:@[
         [self.openCVButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
         [self.openCVButton.topAnchor constraintGreaterThanOrEqualToAnchor:self.bottomView.topAnchor constant:10],
@@ -205,18 +212,21 @@
     ]];
 }
 
--(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
+
 #pragma mark - Actions
 
--(void)openCVButtonTapped {
+- (void)openCVButtonTapped {
     NSLog(@"openCVButtonTapped!");
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"https://github.com/gurachevskaya/rsschool-cv/blob/gh-pages/cv.md"] options:@{} completionHandler:nil];
 }
 
--(void)goToStartButtonTapped {
+
+- (void)goToStartButtonTapped {
     NSLog(@"goToStartButtonTapped!");
     [self.navigationController.navigationController popToRootViewControllerAnimated:YES];
 }

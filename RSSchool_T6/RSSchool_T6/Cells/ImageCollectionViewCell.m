@@ -10,13 +10,5 @@
 
 @implementation ImageCollectionViewCell
 
-- (void)awakeFromNib {
-    
-    [super awakeFromNib];
-    
-}
-
-
-
 
 @end

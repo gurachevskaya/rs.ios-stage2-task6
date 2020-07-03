@@ -20,6 +20,8 @@
 
 static NSString * const reuseIdentifier = @"imageCell";
 
+#pragma mark - Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -46,9 +48,11 @@ static NSString * const reuseIdentifier = @"imageCell";
     }];
 }
 
+
 - (void)dealloc {
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
+
 
 #pragma mark <UICollectionViewDataSource>
 
@@ -56,11 +60,11 @@ static NSString * const reuseIdentifier = @"imageCell";
     return [self.assetsFetchResults count];
 }
 
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     self.imageManager = [[PHCachingImageManager alloc] init];
-        
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     cell.representedAssetIdentifier = asset.localIdentifier;
 
@@ -82,12 +86,11 @@ static NSString * const reuseIdentifier = @"imageCell";
 
 #pragma mark <UICollectionViewDelegate>
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     PHAsset *asset = self.assetsFetchResults[indexPath.row];
     
     if (asset.mediaType == PHAssetMediaTypeImage) {
         [self presentViewController:[[ModalViewController alloc] initWithAsset:asset] animated:YES completion:nil];
-        
     } else if (asset.mediaType == PHAssetMediaTypeVideo) {
         [self.imageManager requestPlayerItemForVideo:asset options:nil resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -102,6 +105,7 @@ static NSString * const reuseIdentifier = @"imageCell";
     }
 }
 
+
 #pragma mark - UICollectionViewLayout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -110,41 +114,31 @@ static NSString * const reuseIdentifier = @"imageCell";
     return  CGSizeMake (resultSizeOfItem, resultSizeOfItem);
 }
 
+
 //- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
 //    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 //
 //    [self.collectionView.collectionViewLayout invalidateLayout];
 //}
 
+
 #pragma mark - PHPhotoLibraryChangeObserver
 
 - (void)photoLibraryDidChange:(nonnull PHChange *)changeInstance {
-    
-    // Check if there are changes to the assets we are showing.
     PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:self.assetsFetchResults];
     if (collectionChanges == nil) {
         return;
     }
     
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
+    //Change notifications may be made on a background queue. Re-dispatch to the main queue before acting on the change as we'll be updating the UI.
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Get the new fetch result.
         self.assetsFetchResults = [collectionChanges fetchResultAfterChanges];
         
         UICollectionView *collectionView = self.collectionView;
         
         if (![collectionChanges hasIncrementalChanges] || [collectionChanges hasMoves]) {
-            // Reload the collection view if the incremental diffs are not available
             [collectionView reloadData];
-            
         } else {
-            /*
-             Tell the collection view to animate insertions and deletions if we
-             have incremental diffs.
-             */
             [collectionView performBatchUpdates:^{
                 NSIndexSet *removedIndexes = [collectionChanges removedIndexes];
                 if ([removedIndexes count] > 0) {
@@ -162,18 +156,15 @@ static NSString * const reuseIdentifier = @"imageCell";
                 }
             } completion:NULL];
         }
-        //   [self resetCachedAssets];
     });
 }
 
--(NSArray *) indexPathsFromIndexSet:(NSIndexSet *)indexSet {
-        
-    NSMutableArray *paths = [[NSMutableArray alloc] init];
 
-    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-        [paths addObject:[NSIndexPath indexPathForItem:idx inSection:0]];
+- (NSArray *)indexPathsFromIndexSet:(NSIndexSet *)indexSet {
+    NSMutableArray *paths = [[NSMutableArray alloc] init];
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+        [paths addObject:[NSIndexPath indexPathForItem:index inSection:0]];
     }];
-    
     return paths;
 }
 

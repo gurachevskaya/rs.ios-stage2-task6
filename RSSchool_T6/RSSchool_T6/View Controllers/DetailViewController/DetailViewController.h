@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CustomButton.h"
 #import <Photos/Photos.h>
+@class CustomButton;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,18 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *creationDateTextLabel;
 @property (strong, nonatomic) IBOutlet UILabel *modificationDateTextLabel;
 @property (strong, nonatomic) IBOutlet UILabel *typeTextLabel;
-@property (strong, nonatomic) IBOutlet CustomButton *shareButton;
-@property (strong, nonatomic) IBOutlet UIButton *playButton;
-@property (strong, nonatomic) PHAsset *asset;
 @property (strong, nonatomic) IBOutlet UILabel *creationDateValueLabel;
 @property (strong, nonatomic) IBOutlet UILabel *modificationDateValueLabel;
 @property (strong, nonatomic) IBOutlet UILabel *typeLabel;
+@property (strong, nonatomic) IBOutlet CustomButton *shareButton;
+@property (strong, nonatomic) IBOutlet UIButton *playButton;
 
-@property(nonatomic , strong) PHCachingImageManager *imageManager;
+@property (strong, nonatomic) PHAsset *asset;
+@property (nonatomic, strong) PHCachingImageManager *imageManager;
 
-
--(instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil asset:(PHAsset *)asset;
-
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil asset:(PHAsset *)asset;
 
 @end
 

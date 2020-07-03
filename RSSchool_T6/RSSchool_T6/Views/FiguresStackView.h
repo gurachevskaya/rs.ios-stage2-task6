@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FiguresStackView : UIStackView
 
--(void)animateFigures;
+- (void)animateFigures;
 
 @end
 

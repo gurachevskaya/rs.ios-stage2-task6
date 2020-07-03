@@ -10,7 +10,7 @@
 
 @implementation UIColor (ColorFromRGB)
 
-+(UIColor *)colorFromRGBNumber:(NSNumber *)color {
++ (UIColor *)colorFromRGBNumber:(NSNumber *)color {
     return [UIColor colorWithRed:((float)((color.intValue & 0xFF0000) >> 16))/255.0
                            green:((float)((color.intValue & 0x00FF00) >>  8))/255.0
                             blue:((float)((color.intValue & 0x0000FF) >>  0))/255.0

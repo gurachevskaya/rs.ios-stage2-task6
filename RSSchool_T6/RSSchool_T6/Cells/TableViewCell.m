@@ -14,17 +14,15 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
             
-    UIView *bgColorView = [[UIView alloc] init];
-    bgColorView.backgroundColor = [UIColor colorFromRGBNumber:@0xFDF4E3];
-    [self setSelectedBackgroundView:bgColorView];
-
+    UIView *backgroundColorView = [[UIView alloc] init];
+    backgroundColorView.backgroundColor = [UIColor colorFromRGBNumber:@0xFDF4E3];
+    [self setSelectedBackgroundView:backgroundColorView];
 }
 
--(void)prepareForReuse {
-    
+
+- (void)prepareForReuse {
     [super prepareForReuse];
     self.selectedBackgroundView = nil;
-
 }
 
 @end

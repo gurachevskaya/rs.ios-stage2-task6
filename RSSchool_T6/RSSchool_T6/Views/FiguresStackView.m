@@ -11,18 +11,15 @@
 #import "Constants.h"
 
 @interface FiguresStackView()
-
 @property (strong, nonatomic) UIView *redCircle;
 @property (strong, nonatomic) UIView *blueRectangle;
 @property (strong, nonatomic) UIView *greenTriangle;
-
 @end
 
 
 @implementation FiguresStackView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         _redCircle = [UIView new];
@@ -35,20 +32,17 @@
 
 
 - (void)setupViews {
-    
     self.redCircle.backgroundColor = [UIColor colorFromRGBNumber:@0xEE686A];
     self.blueRectangle.backgroundColor = [UIColor colorFromRGBNumber:@0x29C2D1];
     self.greenTriangle.backgroundColor = [UIColor colorFromRGBNumber:@0x34C1A1];
     
     CAShapeLayer *triangle = [CAShapeLayer layer];
     UIBezierPath* trianglePath = [UIBezierPath bezierPath];
-    [trianglePath moveToPoint:(CGPoint){kFigureDimension / 2,0}];
-    [trianglePath addLineToPoint:(CGPoint){70,62}];
-    [trianglePath addLineToPoint:(CGPoint){0,62}];
+    [trianglePath moveToPoint:(CGPoint){kFigureDimension / 2.0}];
+    [trianglePath addLineToPoint:(CGPoint){70, 62}];
+    [trianglePath addLineToPoint:(CGPoint){0, 62}];
     [trianglePath closePath];
-    
     [triangle setPath:trianglePath.CGPath];
-    
     self.greenTriangle.layer.mask = triangle;
     
     self.redCircle.layer.cornerRadius = kFigureDimension / 2;
@@ -71,16 +65,14 @@
 }
 
 
--(void)animateFigures {
-    
+- (void)animateFigures {
     [self animateRectangle];
     [self animateTriangle];
     [self animateCircle];
-    
 }
 
--(void)animateCircle {
-    
+
+- (void)animateCircle {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     animation.duration = 1.f;
     animation.fromValue = @(0.8);
@@ -89,10 +81,10 @@
     animation.repeatCount = INFINITY;
     animation.removedOnCompletion = nil;
     [self.redCircle.layer addAnimation:animation forKey:@"transform.scale"];
-    
 }
 
--(void)animateRectangle {
+
+- (void)animateRectangle {
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.5f delay:0 options:UIViewKeyframeAnimationOptionRepeat | UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAutoreverse
                      animations:^{
@@ -112,8 +104,8 @@
     }];
 }
 
--(void)animateTriangle {
-    
+
+- (void)animateTriangle {
     CABasicAnimation* rotationAnimation;
     rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0];
@@ -122,7 +114,6 @@
     rotationAnimation.repeatCount = INFINITY;
     rotationAnimation.removedOnCompletion = nil;
     [self.greenTriangle.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
-    
 }
 
 

@@ -9,24 +9,27 @@
 #import "DetailViewController.h"
 #import "UIColor+ColorFromRGB.h"
 #import <AVKit/AVKit.h>
+#import "CustomButton.h"
 
 
 @interface DetailViewController ()
-- (IBAction)CustomButtonTapped:(id)sender;
+- (IBAction)shareButtonTapped:(id)sender;
 @property (strong, nonatomic) UIImage *sharingImage;
 @property (strong, nonatomic) AVPlayerItem *sharingVideo;
-
 @end
 
 @implementation DetailViewController
 
--(instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil asset:(PHAsset *)asset {
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil asset:(PHAsset *)asset {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _asset = asset;
     }
     return self;
 }
+
+
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,13 +47,15 @@
              }
          }];
     
-    [self conFigureImageView];
+    [self configureImageView];
     [self configureLabels];
-    [self configureButton];
+    [self configureShareButton];
 }
 
--(void)conFigureImageView {
-    
+
+#pragma mark - UI Setup
+
+- (void)configureImageView {
     self.imageManager = [[PHCachingImageManager alloc] init];
     __weak typeof(self) weakSelf = self;
     if (self.asset.mediaType == PHAssetMediaTypeImage || self.asset.mediaType == PHAssetMediaTypeVideo) {
@@ -59,8 +64,7 @@
             self.playButton.hidden = NO;
         }
         
-        [self.imageManager requestImageForAsset:self.asset targetSize:self.imageView.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage *result, NSDictionary *info)
-         {
+        [self.imageManager requestImageForAsset:self.asset targetSize:self.imageView.bounds.size contentMode:PHImageContentModeDefault options:nil resultHandler:^(UIImage *result, NSDictionary *info) {
             weakSelf.sharingImage = result;
             weakSelf.imageView.image = result;
         }];
@@ -74,7 +78,8 @@
     }
 }
 
--(void)configureLabels {
+
+- (void)configureLabels {
     NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"HH:mm:ss dd:MM:yyyy"];
     
@@ -84,23 +89,27 @@
     self.modificationDateValueLabel.text = modificationDateString;
     
     switch (self.asset.mediaType) {
-        case PHAssetMediaTypeUnknown:
+        case PHAssetMediaTypeUnknown: {
             self.typeLabel.text = @"Unknown";
             break;
-        case PHAssetMediaTypeImage:
+        }
+        case PHAssetMediaTypeImage: {
             self.typeLabel.text = @"Image";
             break;
-        case PHAssetMediaTypeVideo:
+        }
+        case PHAssetMediaTypeVideo: {
             self.typeLabel.text = @"Video";
             break;
-        case PHAssetMediaTypeAudio:
+        }
+        case PHAssetMediaTypeAudio: {
             self.typeLabel.text = @"Audio";
             break;
+        }
     }
 }
 
--(void)configureButton {
-    
+
+- (void)configureShareButton {
     [self.shareButton setTitle:@"Share" forState:UIControlStateNormal];
     [self.shareButton setBackgroundColor:[UIColor colorFromRGBNumber:@0xF9CC78]];
     [self.shareButton setTitleColor:[UIColor colorFromRGBNumber:@0x101010] forState:UIControlStateNormal];
@@ -109,16 +118,15 @@
     }
 }
 
-- (IBAction)playVideoButtonClicked:(id)sender {
+
+- (IBAction)playVideoButtonTapped:(id)sender {
     [self playVideo];
 }
 
-- (IBAction)CustomButtonTapped:(id)sender {
-    
+
+- (IBAction)shareButtonTapped:(id)sender {
     UIActivityViewController *activityVC;
-    
     activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.sharingImage] applicationActivities:nil];
-    
     UIDevice *device = [[UIDevice alloc] init];
     //if iPad
     if ( !(device.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
@@ -130,11 +138,10 @@
     [self presentViewController:activityVC animated:YES completion:nil];
 }
 
--(void) playVideo {
-    
+
+- (void)playVideo {
     [self.imageManager requestPlayerItemForVideo:self.asset options:nil resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            
             AVPlayerViewController *playerViewController = [[AVPlayerViewController alloc] init];
             AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
             playerViewController.player = player;

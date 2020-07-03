@@ -23,6 +23,8 @@
 
 @implementation MainViewController
 
+#pragma mark - Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -30,6 +32,7 @@
     [self configureStartButton];
     [self configureFiguresStackView];
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -41,15 +44,16 @@
     [self addFiguresConstraints];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
-    
     [self.figuresStackView animateFigures];
 }
 
+
 #pragma mark - UI Setup
 
--(void)configureQuestionLabel {
+- (void)configureQuestionLabel {
     self.questionLabel = [[UILabel alloc] init];
     self.questionLabel.text = @"Are you ready?";
     self.questionLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:24];
@@ -57,7 +61,8 @@
     self.questionLabel.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void)addLabelConstraints {
+
+- (void)addLabelConstraints {
     [NSLayoutConstraint activateConstraints:@[
         [self.questionLabel.topAnchor constraintLessThanOrEqualToAnchor:self.view.topAnchor constant:100],
         [self.questionLabel.topAnchor constraintGreaterThanOrEqualToAnchor:self.view.topAnchor constant:20],
@@ -65,7 +70,8 @@
     ]];
 }
 
--(void)configureStartButton {
+
+- (void)configureStartButton {
     self.startButton = [[CustomButton alloc] init];
     [self.startButton addTarget:self action:@selector(startButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.startButton setTitle:@"START" forState:UIControlStateNormal];
@@ -75,7 +81,8 @@
     [self.view addSubview:self.startButton];
 }
 
--(void)addButtonConstraints {
+
+- (void)addButtonConstraints {
     [NSLayoutConstraint activateConstraints:@[
         [self.startButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
         [self.startButton.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.view.bottomAnchor constant:-100],
@@ -83,13 +90,15 @@
     ]];
 }
 
--(void)configureFiguresStackView {
+
+- (void)configureFiguresStackView {
     self.figuresStackView = [[FiguresStackView alloc] init];
     [self.view addSubview:self.figuresStackView];
     self.figuresStackView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void)addFiguresConstraints {
+
+- (void)addFiguresConstraints {
     [NSLayoutConstraint activateConstraints:@[
         [self.figuresStackView.topAnchor constraintGreaterThanOrEqualToAnchor:self.questionLabel.bottomAnchor constant:20],
         [self.figuresStackView.topAnchor constraintLessThanOrEqualToAnchor:self.questionLabel.bottomAnchor constant:100],
@@ -99,9 +108,10 @@
     ]];
 }
 
+
 #pragma mark - Actions
 
--(void)startButtonTapped {
+- (void)startButtonTapped {
 
     UITabBarController *tabBarController = [UITabBarController new];
 

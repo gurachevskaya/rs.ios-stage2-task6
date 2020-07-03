@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIColor (ColorFromRGB)
 
-+(UIColor *)colorFromRGBNumber:(NSNumber *)color;
++ (UIColor *)colorFromRGBNumber:(NSNumber *)color;
 
 @end
 

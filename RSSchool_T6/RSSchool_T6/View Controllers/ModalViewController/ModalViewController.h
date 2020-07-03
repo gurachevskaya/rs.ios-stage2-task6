@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) PHAsset *asset;
 
--(instancetype)initWithAsset:(PHAsset *)asset;
+- (instancetype)initWithAsset:(PHAsset *)asset;
 
 @end
 

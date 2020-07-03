@@ -12,19 +12,20 @@
 @interface ModalViewController ()
 @property (strong, nonatomic) UIButton *closeButton;
 @property (strong,  nonatomic) UIImageView *fullImageView;
-
 @end
 
 @implementation ModalViewController
 
-- (instancetype)initWithAsset:(PHAsset *)asset;
-{
+- (instancetype)initWithAsset:(PHAsset *)asset {
     self = [super init];
     if (self) {
         _asset = asset;
     }
     return self;
 }
+
+
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -54,7 +55,8 @@
     self.closeButton.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
--(void)viewWillAppear:(BOOL)animated {
+
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     float aspectRatio = self.fullImageView.image.size.height/self.fullImageView.image.size.width;
@@ -77,7 +79,10 @@
     ]];
 }
 
--(void)closeButtonTapped {
+
+#pragma mark - Actions
+
+- (void)closeButtonTapped {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end

@@ -12,6 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ImageCollectionViewCell : UICollectionViewCell
+
 @property (strong, nonatomic) IBOutlet UIImageView *previewImageView;
 @property (assign, nonatomic) PHImageRequestID imageRequestID;
 @property (copy, nonatomic) NSString *representedAssetIdentifier;

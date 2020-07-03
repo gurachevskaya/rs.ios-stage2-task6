@@ -12,8 +12,7 @@
 
 @implementation CustomButton
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self customInit];
@@ -21,7 +20,8 @@
     return self;
 }
 
--(instancetype)initWithCoder:(NSCoder *)coder {
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         [self customInit];
@@ -29,7 +29,8 @@
     return self;
 }
 
--(void)customInit {
+
+- (void)customInit {
     [self.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:20]];
     self.layer.cornerRadius = 27;
     self.clipsToBounds = YES;

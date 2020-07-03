@@ -16,7 +16,6 @@
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [UINavigationBar appearance].barTintColor = [UIColor colorFromRGBNumber:@0xF9CC78];
     
@@ -30,12 +29,6 @@
     [self.window makeKeyAndVisible];;
     
     return YES;
-    
 }
-
-
-#pragma mark - UISceneSession lifecycle
-
-
 
 @end

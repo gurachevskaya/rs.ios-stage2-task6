@@ -62,19 +62,20 @@ static NSString * const reuseIdentifier = @"imageCell";
     self.imageManager = [[PHCachingImageManager alloc] init];
         
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
-    
+    cell.representedAssetIdentifier = asset.localIdentifier;
+
     PHImageRequestOptions *requestOptions = [PHImageRequestOptions new];
-//    requestOptions.synchronous = YES;
     // requestOptions.resizeMode = PHImageRequestOptionsResizeModeFast;
      [requestOptions setDeliveryMode:PHImageRequestOptionsDeliveryModeHighQualityFormat];
     
     __weak typeof(cell) weakCell = cell;
     cell.imageRequestID = [self.imageManager requestImageForAsset:asset targetSize:cell.previewImageView.frame.size contentMode:PHImageContentModeAspectFill options:requestOptions resultHandler:^(UIImage *result, NSDictionary *info) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakCell.previewImageView.image = result;
-        });
+        if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                weakCell.previewImageView.image = result;
+            });
+        }
     }];
-    
     return cell;
 }
 
@@ -100,16 +101,6 @@ static NSString * const reuseIdentifier = @"imageCell";
         }];
     }
 }
-    
-//- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    PHImageRequestID requestId = ((ImageCollectionViewCell *)cell).imageRequestID;
-//    if(requestId != 0)
-//    {
-//        [self.imageManager cancelImageRequest:requestId];
-//       // [((ImageCollectionViewCell *)cell).previewImageView setImage:nil];
-//    }
-//}
 
 #pragma mark - UICollectionViewLayout
 

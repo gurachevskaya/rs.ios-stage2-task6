@@ -62,19 +62,17 @@
         
     self.imageManager = [[PHCachingImageManager alloc] init];
     PHAsset *asset = self.assetsFetchResults[indexPath.row];
+    cell.representedAssetIdentifier = asset.localIdentifier;
         
     __weak typeof(cell) weakCell = cell;
-    cell.contentRequestID = [asset requestContentEditingInputWithOptions:nil completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
-        if (contentEditingInput.fullSizeImageURL) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                weakCell.namelabel.text = [contentEditingInput.fullSizeImageURL lastPathComponent];
-            });
-        }
-    }];
     
      cell.imageRequestID = [self.imageManager requestImageForAsset:asset targetSize:cell.mainImage.image.size contentMode:PHImageContentModeAspectFill options:nil resultHandler:^(UIImage *result, NSDictionary *info){
          dispatch_async(dispatch_get_main_queue(), ^{
-             weakCell.mainImage.image = result;
+             
+             if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
+               weakCell.mainImage.image = result;
+               weakCell.namelabel.text = [asset valueForKey:@"filename"];
+             }
          });
      }];
     
@@ -105,42 +103,13 @@
     return cell;
 }
 
+#pragma mark - Table view delegate
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
      PHAsset *asset = self.assetsFetchResults[indexPath.item];
 
     [self.navigationController pushViewController:[[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:[NSBundle mainBundle] asset:asset] animated:YES];
-}
-
-//#pragma mark - Table view delegate
-//
-//-(void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    {
-//        PHAsset *asset = self.assetsFetchResults[indexPath.row];
-//
-//        PHImageRequestID imageRequestID = ((TableViewCell *)cell).imageRequestID;
-//        PHContentEditingInputRequestID contentRequestID = ((TableViewCell *)cell).contentRequestID;
-//        if(imageRequestID != 0)
-//        {
-//            [self.imageManager cancelImageRequest:imageRequestID];
-//            [((TableViewCell *)cell).imageView setImage:nil];
-//        }
-//        if(contentRequestID != 0)
-//        {
-//            [asset cancelContentEditingInputRequest:contentRequestID];
-//            ((TableViewCell *)cell).namelabel.text = @"";
-//            ((TableViewCell *)cell).resolutionLabel.text = @"";
-//        }
-//    }
-//}
-
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-
-    // Update cached assets for the new visible area.
- //   [self updateCachedAssets];
 }
 
 #pragma mark - Helpers
@@ -199,7 +168,6 @@
                 }
             } completion:NULL];
         }
-        //   [self resetCachedAssets];
     });
 }
 

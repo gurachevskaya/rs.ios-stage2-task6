@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UILabel *resolutionLabel;
 @property (assign, nonatomic) PHImageRequestID imageRequestID;
 @property (assign, nonatomic) PHContentEditingInputRequestID contentRequestID;
+@property (copy, nonatomic) NSString *representedAssetIdentifier;
 
 @end
 

@@ -279,38 +279,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "04391778-E240-4F2B-93EC-8EC21CAEBF5C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "RSSchool_T6/View Controllers/GalleryCollectionViewController/GalleryCollectionViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "GalleryCollectionViewController"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "39A6EE87-0361-4735-BC4C-608192685D9B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "RSSchool_T6/View Controllers/InfoTableViewController/InfoTableViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
-            landmarkName = "InfoTableViewController"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "0C7837C8-9774-496B-93E1-9FBF465BDA22"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -350,8 +318,8 @@
             filePath = "RSSchool_T6/View Controllers/GalleryCollectionViewController/GalleryCollectionViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
             landmarkName = "-collectionView:didSelectItemAtIndexPath:"
             landmarkType = "7">
          </BreakpointContent>
@@ -366,8 +334,8 @@
             filePath = "RSSchool_T6/View Controllers/InfoTableViewController/InfoTableViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "7">
          </BreakpointContent>
@@ -382,8 +350,8 @@
             filePath = "RSSchool_T6/View Controllers/InfoTableViewController/InfoTableViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "-photoLibraryDidChange:"
             landmarkType = "7">
          </BreakpointContent>
@@ -414,8 +382,8 @@
             filePath = "RSSchool_T6/View Controllers/InfoTableViewController/InfoTableViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "-photoLibraryDidChange:"
             landmarkType = "7">
          </BreakpointContent>

@@ -85,23 +85,14 @@
 
 
 - (void)animateRectangle {
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.5f delay:0 options:UIViewKeyframeAnimationOptionRepeat | UIViewAnimationOptionCurveLinear | UIViewAnimationOptionAutoreverse
-                     animations:^{
-        
-        weakSelf.blueRectangle.center = CGPointMake(self.blueRectangle.center.x, self.blueRectangle.center.y + kFigureDimension * 0.1);
-        
-    } completion:^(BOOL finished) {
-        
-        [UIView animateWithDuration:0.5f
-                         animations:^{
-            
-            weakSelf.blueRectangle.center = CGPointMake(self.blueRectangle.center.x, self.blueRectangle.center.y - kFigureDimension * 0.1);
-            
-        } completion:^(BOOL finished) {
-            
-        }];
-    }];
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"];
+    animation.duration = 0.5f;
+    animation.fromValue = [NSValue valueWithCGPoint:CGPointMake(self.blueRectangle.layer.position.x, self.blueRectangle.layer.position.y + kFigureDimension * 0.1)];
+    animation.toValue = [NSValue valueWithCGPoint:CGPointMake(self.blueRectangle.layer.position.x, self.blueRectangle.layer.position.y - kFigureDimension * 0.1)];
+    animation.autoreverses = YES;
+    animation.repeatCount = INFINITY;
+    animation.removedOnCompletion = nil;
+    [self.blueRectangle.layer addAnimation:animation forKey:@"position"];
 }
 
 

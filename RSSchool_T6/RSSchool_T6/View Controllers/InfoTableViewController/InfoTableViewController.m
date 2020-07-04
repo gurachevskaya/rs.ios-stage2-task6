@@ -151,7 +151,25 @@
             
         } else {
            
-            [tableView performBatchUpdates:^{
+            if (@available(iOS 11.0, *)) {
+                [tableView performBatchUpdates:^{
+                    NSIndexSet *removedIndexes = [tableChanges removedIndexes];
+                    if ([removedIndexes count] > 0) {
+                        [tableView deleteRowsAtIndexPaths:[self indexPathsFromIndexSet:removedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    }
+                    
+                    NSIndexSet *insertedIndexes = [tableChanges insertedIndexes];
+                    if ([insertedIndexes count] > 0) {
+                        [tableView insertRowsAtIndexPaths:[self indexPathsFromIndexSet:insertedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    }
+                    
+                    NSIndexSet *changedIndexes = [tableChanges changedIndexes];
+                    if ([changedIndexes count] > 0) {
+                        [tableView reloadRowsAtIndexPaths:[self indexPathsFromIndexSet:changedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    }
+                } completion:NULL];
+            } else {
+                // Fallback on earlier versions
                 NSIndexSet *removedIndexes = [tableChanges removedIndexes];
                 if ([removedIndexes count] > 0) {
                     [tableView deleteRowsAtIndexPaths:[self indexPathsFromIndexSet:removedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -166,7 +184,7 @@
                 if ([changedIndexes count] > 0) {
                     [tableView reloadRowsAtIndexPaths:[self indexPathsFromIndexSet:changedIndexes] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
-            } completion:NULL];
+            }
         }
     });
 }

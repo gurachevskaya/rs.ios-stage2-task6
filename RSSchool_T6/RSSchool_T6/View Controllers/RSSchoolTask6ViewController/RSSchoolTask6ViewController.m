@@ -23,6 +23,11 @@
 @property (strong, nonatomic) UIView *secondLineView;
 @property (strong, nonatomic) UIStackView *infoStackView;
 @property (strong, nonatomic) UIImageView *appleView;
+@property (strong, nonatomic) UIStackView *mainStackView;
+
+@property (strong, nonatomic) NSArray *portraitButtonConstraits;
+@property (strong, nonatomic) NSArray *landscapeButtonConstraits;
+
 @end
 
 @implementation RSSchoolTask6ViewController
@@ -32,7 +37,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"RSSchool Task 6";
-    
+
     [self configureViews];
     [self configureFiguresStackView];
     [self configureButtons];
@@ -46,13 +51,26 @@
     [self activateViewsConstraints];
     [self activateInfoViewConstraints];
     [self activateFiguresViewConstraints];
-    [self activateButtonConstraintsInPortraitMode];
+    [self activateButtonConstraints];
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:YES];
     [self.figuresStackView animateFigures];
+}
+
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    if (size.height < size.width) {
+        [NSLayoutConstraint deactivateConstraints:self.portraitButtonConstraits];
+        [NSLayoutConstraint activateConstraints:self.landscapeButtonConstraits];
+    } else if (size.height >= size.width) {
+        [NSLayoutConstraint deactivateConstraints:self.landscapeButtonConstraits];
+        [NSLayoutConstraint activateConstraints:self.portraitButtonConstraits];
+    }
 }
 
 
@@ -89,7 +107,6 @@
     self.infoStackView = [[UIStackView alloc] init];
     self.infoStackView.axis = UILayoutConstraintAxisVertical;
     self.infoStackView.distribution = UIStackViewDistributionEqualSpacing;
-//    self.infoStackView.spacing = 10;
     
     UILabel *nameLabel = [[UILabel alloc] init];
     UILabel *modelLabel = [[UILabel alloc] init];
@@ -98,6 +115,8 @@
     nameLabel.adjustsFontSizeToFitWidth = YES;
     
     nameLabel.text = device.name;
+//    nameLabel.numberOfLines = 0;
+    nameLabel.adjustsFontSizeToFitWidth = YES;
     modelLabel.text = device.model;
     systemLabel.text = [NSString stringWithFormat:@"%@ %@", device.systemName, device.systemVersion];
     nameLabel.font = modelLabel.font = systemLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:20];
@@ -150,31 +169,29 @@
 
 // views
 - (void)activateViewsConstraints {
+    self.mainStackView = [UIStackView new];
+    [self.view addSubview:self.mainStackView];
+    self.mainStackView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.mainStackView.axis = UILayoutConstraintAxisVertical;
+    self.mainStackView.distribution = UIStackViewDistributionFillEqually;
     [NSLayoutConstraint activateConstraints:@[
-        [self.topView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:70],
-        [self.topView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.topView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
-        [self.topView.heightAnchor constraintEqualToAnchor:self.middleView.heightAnchor],
+        [self.mainStackView.topAnchor constraintEqualToAnchor: self.view.topAnchor constant:50],
+        [self.mainStackView.leadingAnchor constraintEqualToAnchor: self.view.leadingAnchor constant:50],
+        [self.mainStackView.trailingAnchor constraintEqualToAnchor: self.view.trailingAnchor constant:-50],
+        [self.mainStackView.bottomAnchor constraintEqualToAnchor: self.view.bottomAnchor constant:-50],
         
-        [self.middleView.heightAnchor constraintEqualToAnchor:self.bottomView.heightAnchor],
-        [self.middleView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.bottomView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.middleView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
-        [self.bottomView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
-        
-        [self.firstLineView.topAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
-        [self.middleView.topAnchor constraintEqualToAnchor:self.firstLineView.bottomAnchor],
-        [self.secondLineView.topAnchor constraintEqualToAnchor:self.middleView.bottomAnchor],
-        [self.bottomView.topAnchor constraintEqualToAnchor:self.secondLineView.bottomAnchor],
-        [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-70],
-        
+        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.mainStackView.leadingAnchor],
+        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.mainStackView.trailingAnchor],
+        [self.firstLineView.centerYAnchor constraintEqualToAnchor:self.topView.bottomAnchor],
+        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.mainStackView.leadingAnchor],
+        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.mainStackView.trailingAnchor],
+        [self.secondLineView.centerYAnchor constraintEqualToAnchor:self.bottomView.topAnchor],
         [self.firstLineView.heightAnchor constraintEqualToConstant:2],
-        [self.firstLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.firstLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
-        [self.secondLineView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:50],
-        [self.secondLineView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-50],
         [self.secondLineView.heightAnchor constraintEqualToConstant:2]
     ]];
+    [self.mainStackView addArrangedSubview:self.topView];
+    [self.mainStackView addArrangedSubview:self.middleView];
+    [self.mainStackView addArrangedSubview:self.bottomView];
 }
 
 // info
@@ -183,13 +200,13 @@
         [self.infoStackView.centerYAnchor constraintEqualToAnchor: self.topView.centerYAnchor],
         [self.infoStackView.centerXAnchor constraintGreaterThanOrEqualToAnchor: self.topView.centerXAnchor],
         [self.infoStackView.bottomAnchor constraintLessThanOrEqualToAnchor: self.topView.bottomAnchor],
+        [self.infoStackView.trailingAnchor constraintLessThanOrEqualToAnchor: self.topView.trailingAnchor],
         
-        [self.appleView.leadingAnchor constraintLessThanOrEqualToAnchor:self.topView.leadingAnchor],
+        [self.appleView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.topView.leadingAnchor],
         [self.appleView.centerYAnchor constraintEqualToAnchor:self.topView.centerYAnchor],
         [self.appleView.topAnchor constraintGreaterThanOrEqualToAnchor:self.topView.topAnchor constant:5],
         [self.appleView.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.topView.bottomAnchor constant:5],
         [self.appleView.trailingAnchor constraintEqualToAnchor:self.infoStackView.leadingAnchor constant:-10],
-
     ]];
 }
 
@@ -202,33 +219,39 @@
 }
 
 // buttons
-- (void)activateButtonConstraintsInPortraitMode {
-    [NSLayoutConstraint activateConstraints:@[
+- (void)activateButtonConstraints {
+    self.portraitButtonConstraits = @[
         [self.openCVButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
         [self.openCVButton.topAnchor constraintGreaterThanOrEqualToAnchor:self.bottomView.topAnchor constant:10],
         [self.openCVButton.bottomAnchor constraintEqualToAnchor:self.goToStartButton.topAnchor constant:-10],
         [self.goToStartButton.bottomAnchor constraintGreaterThanOrEqualToAnchor:self.bottomView.bottomAnchor constant:-30],
         [self.goToStartButton.centerXAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor],
-    ]];
-}
-
-
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    ];
+    self.landscapeButtonConstraits = @[
+        [self.openCVButton.trailingAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor constant:-25],
+        [self.openCVButton.centerYAnchor constraintEqualToAnchor:self.bottomView.centerYAnchor],
+        [self.goToStartButton.leadingAnchor constraintEqualToAnchor:self.bottomView.centerXAnchor constant:25],
+        [self.goToStartButton.centerYAnchor constraintEqualToAnchor:self.bottomView.centerYAnchor]
+    ];
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (orientation == UIInterfaceOrientationPortrait) {
+    [NSLayoutConstraint activateConstraints:self.portraitButtonConstraits];
+    } else {
+    [NSLayoutConstraint activateConstraints:self.landscapeButtonConstraits];
+    }
 }
 
 
 #pragma mark - Actions
 
 - (void)openCVButtonTapped {
-    NSLog(@"openCVButtonTapped!");
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"https://github.com/gurachevskaya/rsschool-cv/blob/gh-pages/cv.md"] options:@{} completionHandler:nil];
 }
 
 
 - (void)goToStartButtonTapped {
-    NSLog(@"goToStartButtonTapped!");
     [self.navigationController.navigationController popToRootViewControllerAnimated:YES];
 }
+
 
 @end
